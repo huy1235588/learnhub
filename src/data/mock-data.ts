@@ -23,6 +23,78 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 5432,
         lastUpdated: '2025-06-15',
+        reviews: [
+            {
+                id: '1',
+                userId: 'user123',
+                rating: 5,
+                comment: 'Khóa học rất chi tiết và hữu ích, giúp tôi tự tin hơn khi thi IELTS.',
+                createdAt: '2025-06-16',
+            },
+            {
+                id: '2',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Nội dung phong phú nhưng cần thêm bài tập thực hành.',
+                createdAt: '2025-06-17',
+            },
+            {
+                id: '2',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Nội dung phong phú nhưng cần thêm bài tập thực hành.',
+                createdAt: '2025-06-17',
+            },
+            {
+                id: '2',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Nội dung phong phú nhưng cần thêm bài tập thực hành.',
+                createdAt: '2025-06-17',
+            },
+            {
+                id: '2',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Nội dung phong phú nhưng cần thêm bài tập thực hành.',
+                createdAt: '2025-06-17',
+            },
+            {
+                id: '2',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Nội dung phong phú nhưng cần thêm bài tập thực hành.',
+                createdAt: '2025-06-17',
+            },
+            {
+                id: '2',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Nội dung phong phú nhưng cần thêm bài tập thực hành.',
+                createdAt: '2025-06-17',
+            },
+            {
+                id: '2',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Nội dung phong phú nhưng cần thêm bài tập thực hành.',
+                createdAt: '2025-06-17',
+            },
+            {
+                id: '2',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Nội dung phong phú nhưng cần thêm bài tập thực hành.',
+                createdAt: '2025-06-17',
+            },
+            {
+                id: '2',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Nội dung phong phú nhưng cần thêm bài tập thực hành.',
+                createdAt: '2025-06-17',
+            },
+        ],
     },
     {
         id: '2',
@@ -46,6 +118,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 4321,
         lastUpdated: '2025-05-20',
+        reviews: [
+            {
+                id: '3',
+                userId: 'user789',
+                rating: 5,
+                comment: 'Khóa học rất thực tế, giúp tôi tự tin hơn trong các cuộc họp công việc.',
+                createdAt: '2025-05-22',
+            },
+            {
+                id: '4',
+                userId: 'user012',
+                rating: 4,
+                comment: 'Nội dung hay nhưng cần thêm bài tập thực hành nhiều hơn.',
+                createdAt: '2025-05-25',
+            },
+        ],
     },
     {
         id: '3',
@@ -68,6 +156,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 3789,
         lastUpdated: '2025-07-01',
+        reviews: [
+            {
+                id: '5',
+                userId: 'user345',
+                rating: 5,
+                comment: 'Cô Sarah dạy rất chi tiết, phát âm của tôi đã cải thiện rõ rệt.',
+                createdAt: '2025-07-02',
+            },
+            {
+                id: '6',
+                userId: 'user678',
+                rating: 4,
+                comment: 'Bài học hay nhưng cần thêm thời gian thực hành.',
+                createdAt: '2025-07-03',
+            },
+        ],
     },
     {
         id: '4',
@@ -91,6 +195,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 4110,
         lastUpdated: '2025-06-25',
+        reviews: [
+            {
+                id: '7',
+                userId: 'user901',
+                rating: 5,
+                comment: 'Đạt được 780 điểm TOEIC sau khi học xong khóa này. Rất hài lòng!',
+                createdAt: '2025-06-27',
+            },
+            {
+                id: '8',
+                userId: 'user234',
+                rating: 4,
+                comment: 'Chiến thuật làm bài rất hiệu quả, tăng 150 điểm so với lần thi trước.',
+                createdAt: '2025-06-30',
+            },
+        ],
     },
     {
         id: '5',
@@ -113,6 +233,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 2500,
         lastUpdated: '2025-07-05',
+        reviews: [
+            {
+                id: '9',
+                userId: 'user567',
+                rating: 5,
+                comment: 'Tôi đã vượt qua phỏng vấn ở công ty đa quốc gia nhờ khóa học này!',
+                createdAt: '2025-07-06',
+            },
+            {
+                id: '10',
+                userId: 'user890',
+                rating: 4,
+                comment: 'Rất thực tế và bổ ích, tự tin hơn nhiều khi phỏng vấn.',
+                createdAt: '2025-07-07',
+            },
+        ],
     },
     {
         id: '6',
@@ -136,6 +272,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 3105,
         lastUpdated: '2025-05-10',
+        reviews: [
+            {
+                id: '11',
+                userId: 'user123',
+                rating: 4,
+                comment: 'Giải thích ngữ pháp rất dễ hiểu, phù hợp với người mới bắt đầu.',
+                createdAt: '2025-05-12',
+            },
+            {
+                id: '12',
+                userId: 'user456',
+                rating: 5,
+                comment: 'Cuối cùng tôi cũng hiểu được các thì trong tiếng Anh!',
+                createdAt: '2025-05-15',
+            },
+        ],
     },
     {
         id: '7',
@@ -158,6 +310,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 3567,
         lastUpdated: '2025-06-30',
+        reviews: [
+            {
+                id: '13',
+                userId: 'user789',
+                rating: 5,
+                comment: 'Cô Anna dạy rất nhiệt tình, bài học sinh động và thú vị.',
+                createdAt: '2025-07-01',
+            },
+            {
+                id: '14',
+                userId: 'user012',
+                rating: 4,
+                comment: 'Tôi đã có thể giao tiếp cơ bản với người nước ngoài sau khóa học này.',
+                createdAt: '2025-07-02',
+            },
+        ],
     },
     {
         id: '8',
@@ -181,6 +349,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 4200,
         lastUpdated: '2025-06-18',
+        reviews: [
+            {
+                id: '15',
+                userId: 'user345',
+                rating: 5,
+                comment: 'Đạt 105 điểm TOEFL sau 3 tháng học. Khóa học rất đáng tiền!',
+                createdAt: '2025-06-20',
+            },
+            {
+                id: '16',
+                userId: 'user678',
+                rating: 5,
+                comment: 'Dr. Kevin giảng dạy rất chuyên nghiệp, chiến lược làm bài rất hiệu quả.',
+                createdAt: '2025-06-22',
+            },
+        ],
     },
     {
         id: '9',
@@ -203,6 +387,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 1980,
         lastUpdated: '2025-07-08',
+        reviews: [
+            {
+                id: '17',
+                userId: 'user901',
+                rating: 5,
+                comment: 'Rất hữu ích cho lập trình viên như tôi. Từ vựng chuyên ngành rất đầy đủ.',
+                createdAt: '2025-07-09',
+            },
+            {
+                id: '18',
+                userId: 'user234',
+                rating: 4,
+                comment: 'Giúp tôi tự tin hơn trong các meeting với team quốc tế.',
+                createdAt: '2025-07-10',
+            },
+        ],
     },
     {
         id: '10',
@@ -226,6 +426,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 1550,
         lastUpdated: '2025-06-01',
+        reviews: [
+            {
+                id: '19',
+                userId: 'user567',
+                rating: 5,
+                comment: 'Khóa học khó nhưng rất đáng giá. Đã pass C2 Proficiency với điểm cao!',
+                createdAt: '2025-06-03',
+            },
+            {
+                id: '20',
+                userId: 'user890',
+                rating: 5,
+                comment: 'Dr. Olivia là giảng viên tuyệt vời. Trình độ tiếng Anh của tôi đã lên một tầm cao mới.',
+                createdAt: '2025-06-05',
+            },
+        ],
     },
     {
         id: '11',
@@ -248,6 +464,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 1890,
         lastUpdated: '2025-07-10',
+        reviews: [
+            {
+                id: '21',
+                userId: 'user123',
+                rating: 5,
+                comment: 'Kỹ năng tranh luận của tôi đã cải thiện đáng kể. Rất recommend!',
+                createdAt: '2025-07-11',
+            },
+            {
+                id: '22',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Thầy Daniel dạy rất hay, các ví dụ thực tế và dễ hiểu.',
+                createdAt: '2025-07-12',
+            },
+        ],
     },
     {
         id: '12',
@@ -271,6 +503,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 2800,
         lastUpdated: '2025-07-02',
+        reviews: [
+            {
+                id: '23',
+                userId: 'user789',
+                rating: 5,
+                comment: 'Cuối cùng tôi cũng biết cách viết email chuyên nghiệp. Cảm ơn cô Laura!',
+                createdAt: '2025-07-03',
+            },
+            {
+                id: '24',
+                userId: 'user012',
+                rating: 5,
+                comment: 'Rất thực tế cho công việc văn phòng. Các mẫu email rất hữu ích.',
+                createdAt: '2025-07-04',
+            },
+        ],
     },
     {
         id: '13',
@@ -293,6 +541,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 2555,
         lastUpdated: '2025-06-28',
+        reviews: [
+            {
+                id: '25',
+                userId: 'user345',
+                rating: 5,
+                comment: 'Writing Task 2 của tôi đã từ 6.0 lên 7.5. Khóa học rất chi tiết!',
+                createdAt: '2025-06-29',
+            },
+            {
+                id: '26',
+                userId: 'user678',
+                rating: 4,
+                comment: 'Dr. Emily giảng dạy rất tâm huyết, feedback chi tiết cho từng bài viết.',
+                createdAt: '2025-07-01',
+            },
+        ],
     },
     {
         id: '14',
@@ -315,6 +579,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 1240,
         lastUpdated: '2025-07-01',
+        reviews: [
+            {
+                id: '27',
+                userId: 'user901',
+                rating: 5,
+                comment: 'Là bác sĩ, tôi thấy khóa học này vô cùng hữu ích cho công việc.',
+                createdAt: '2025-07-02',
+            },
+            {
+                id: '28',
+                userId: 'user234',
+                rating: 5,
+                comment: 'Dr. Wilson có kinh nghiệm thực tế, giảng dạy rất chuyên nghiệp.',
+                createdAt: '2025-07-03',
+            },
+        ],
     },
     {
         id: '15',
@@ -338,6 +618,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 2900,
         lastUpdated: '2025-07-11',
+        reviews: [
+            {
+                id: '29',
+                userId: 'user567',
+                rating: 4,
+                comment: 'Giúp tôi nhận ra và sửa những lỗi sai mà tôi hay mắc phải.',
+                createdAt: '2025-07-12',
+            },
+            {
+                id: '30',
+                userId: 'user890',
+                rating: 5,
+                comment: 'Thầy Mark giải thích rất rõ ràng, dễ hiểu và dễ nhớ.',
+                createdAt: '2025-07-13',
+            },
+        ],
     },
     {
         id: '16',
@@ -360,6 +656,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 4500,
         lastUpdated: '2025-05-15',
+        reviews: [
+            {
+                id: '31',
+                userId: 'user123',
+                rating: 5,
+                comment: 'Rất hữu ích cho chuyến du lịch châu Âu. Tôi đã giao tiếp được với người địa phương!',
+                createdAt: '2025-05-17',
+            },
+            {
+                id: '32',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Ngắn gọn nhưng đầy đủ những gì cần thiết cho du lịch.',
+                createdAt: '2025-05-20',
+            },
+        ],
     },
     {
         id: '17',
@@ -383,6 +695,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 2100,
         lastUpdated: '2025-06-20',
+        reviews: [
+            {
+                id: '33',
+                userId: 'user789',
+                rating: 5,
+                comment: 'Phần nghe TOEIC của tôi đã cải thiện từ 350 lên 450 điểm!',
+                createdAt: '2025-06-22',
+            },
+            {
+                id: '34',
+                userId: 'user012',
+                rating: 4,
+                comment: 'Thầy Michael có nhiều mẹo hay, giúp tôi làm bài nhanh và chính xác hơn.',
+                createdAt: '2025-06-25',
+            },
+        ],
     },
     {
         id: '18',
@@ -405,6 +733,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 1750,
         lastUpdated: '2025-07-03',
+        reviews: [
+            {
+                id: '35',
+                userId: 'user345',
+                rating: 5,
+                comment: 'Đã đạt 28/30 điểm Speaking TOEFL. Template rất hiệu quả!',
+                createdAt: '2025-07-04',
+            },
+            {
+                id: '36',
+                userId: 'user678',
+                rating: 4,
+                comment: 'Dr. Kevin hướng dẫn rất chi tiết, feedback cá nhân rất hữu ích.',
+                createdAt: '2025-07-05',
+            },
+        ],
     },
     {
         id: '19',
@@ -427,6 +771,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 950,
         lastUpdated: '2025-06-29',
+        reviews: [
+            {
+                id: '37',
+                userId: 'user901',
+                rating: 5,
+                comment: 'Khóa học này đã giúp tôi thành công gọi vốn 2 triệu USD cho startup!',
+                createdAt: '2025-06-30',
+            },
+            {
+                id: '38',
+                userId: 'user234',
+                rating: 5,
+                comment: 'David có kinh nghiệm thực tế, các case study rất bổ ích.',
+                createdAt: '2025-07-01',
+            },
+        ],
     },
     {
         id: '20',
@@ -450,6 +810,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 1500,
         lastUpdated: '2025-07-09',
+        reviews: [
+            {
+                id: '39',
+                userId: 'user567',
+                rating: 5,
+                comment: 'Ngữ điệu của tôi đã tự nhiên hơn nhiều. Cảm ơn cô Sarah!',
+                createdAt: '2025-07-10',
+            },
+            {
+                id: '40',
+                userId: 'user890',
+                rating: 4,
+                comment: 'Khóa học nâng cao tuyệt vời, phù hợp cho người đã có nền tảng.',
+                createdAt: '2025-07-11',
+            },
+        ],
     },
     {
         id: '21',
@@ -472,6 +848,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 850,
         lastUpdated: '2025-06-15',
+        reviews: [
+            {
+                id: '41',
+                userId: 'user123',
+                rating: 5,
+                comment: 'Là luật sư, tôi thấy khóa học này rất cần thiết cho công việc quốc tế.',
+                createdAt: '2025-06-17',
+            },
+            {
+                id: '42',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Jessica có kinh nghiệm thực tế, các ví dụ hợp đồng rất hữu ích.',
+                createdAt: '2025-06-20',
+            },
+        ],
     },
     {
         id: '22',
@@ -494,6 +886,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 2300,
         lastUpdated: '2025-07-05',
+        reviews: [
+            {
+                id: '43',
+                userId: 'user789',
+                rating: 4,
+                comment: 'Khác với học ngữ pháp truyền thống, khóa này tập trung vào ứng dụng thực tế.',
+                createdAt: '2025-07-06',
+            },
+            {
+                id: '44',
+                userId: 'user012',
+                rating: 5,
+                comment: 'Cuối cùng tôi cũng biết cách dùng ngữ pháp vào speaking và writing!',
+                createdAt: '2025-07-07',
+            },
+        ],
     },
     {
         id: '23',
@@ -517,6 +925,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 1950,
         lastUpdated: '2025-07-12',
+        reviews: [
+            {
+                id: '45',
+                userId: 'user345',
+                rating: 5,
+                comment: 'Sau khóa học, tôi đã tự tin thuyết trình trước 200 người!',
+                createdAt: '2025-07-13',
+            },
+            {
+                id: '46',
+                userId: 'user678',
+                rating: 4,
+                comment: 'David dạy rất tâm huyết, các tips rất thực tế và hiệu quả.',
+                createdAt: '2025-07-14',
+            },
+        ],
     },
     {
         id: '24',
@@ -540,6 +964,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 600,
         lastUpdated: '2025-06-11',
+        reviews: [
+            {
+                id: '47',
+                userId: 'user901',
+                rating: 5,
+                comment: 'Đã pass IELTS Life Skills B1 với điểm cao. Cảm ơn cô Laura!',
+                createdAt: '2025-06-13',
+            },
+            {
+                id: '48',
+                userId: 'user234',
+                rating: 4,
+                comment: 'Khóa học ngắn gọn nhưng đúng trọng tâm, phù hợp cho mục đích định cư.',
+                createdAt: '2025-06-15',
+            },
+        ],
     },
     {
         id: '25',
@@ -563,6 +1003,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 5200,
         lastUpdated: '2025-07-07',
+        reviews: [
+            {
+                id: '49',
+                userId: 'user567',
+                rating: 5,
+                comment: 'Khóa học tuyệt vời cho người mới bắt đầu. Cô Anna rất kiên nhẫn!',
+                createdAt: '2025-07-08',
+            },
+            {
+                id: '50',
+                userId: 'user890',
+                rating: 4,
+                comment: 'Từ không biết gì đến có thể nói chuyện cơ bản. Rất hài lòng!',
+                createdAt: '2025-07-09',
+            },
+        ],
     },
     {
         id: '26',
@@ -585,6 +1041,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 950,
         lastUpdated: '2025-07-10',
+        reviews: [
+            {
+                id: '51',
+                userId: 'user123',
+                rating: 5,
+                comment: 'Được promote lên Manager sau khi học xong khóa này. Cảm ơn Jessica!',
+                createdAt: '2025-07-11',
+            },
+            {
+                id: '52',
+                userId: 'user456',
+                rating: 4,
+                comment: 'Rất hữu ích cho những ai muốn lên vị trí lãnh đạo.',
+                createdAt: '2025-07-12',
+            },
+        ],
     },
     {
         id: '27',
@@ -608,6 +1080,22 @@ export const mockProducts: Product[] = [
         isFavorite: false,
         students: 1100,
         lastUpdated: '2025-06-25',
+        reviews: [
+            {
+                id: '53',
+                userId: 'user789',
+                rating: 5,
+                comment: 'Đã đạt điểm 210/230 trong kỳ thi CAE. Khóa học rất chi tiết và hữu ích!',
+                createdAt: '2025-06-26',
+            },
+            {
+                id: '54',
+                userId: 'user012',
+                rating: 4,
+                comment: 'Dr. Olivia có phương pháp giảng dạy rất hiệu quả, giúp tôi nắm vững kiến thức.',
+                createdAt: '2025-06-27',
+            },
+        ],
     },
     {
         id: '28',

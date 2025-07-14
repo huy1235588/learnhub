@@ -10,7 +10,7 @@ import Image from 'next/image';
 interface ProductCardProps {
     product: Product;
     onClick?: (product: Product) => void;
-    onFavoriteToggle?: (productId: string) => void;
+    onFavoriteToggle: (productId: string) => void;
     className?: string;
 }
 
@@ -19,9 +19,9 @@ export function ProductCard({ product, onClick, onFavoriteToggle, className }: P
         onClick?.(product);
     };
 
-    const handleFavoriteClick = (e: React.MouseEvent) => {
+    const handleFavoriteToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-        onFavoriteToggle?.(product.id);
+        onFavoriteToggle(product.id);
     };
 
     return (
@@ -45,11 +45,12 @@ export function ProductCard({ product, onClick, onFavoriteToggle, className }: P
                 <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300' />
 
                 {/* Favorite button */}
-                <button
-                    onClick={handleFavoriteClick}
+                <Button
+                    variant='ghost'
+                    onClick={handleFavoriteToggle}
                     className={cn(
                         'absolute top-3 right-3 p-2 rounded-full transition-all duration-200',
-                        'bg-white/90 hover:bg-white shadow-sm hover:shadow-md',
+                        'bg-white/90 hover:bg-white shadow-sm hover:shadow-md hover:text-red-500',
                         product.isFavorite ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
                     )}
                 >
@@ -59,7 +60,7 @@ export function ProductCard({ product, onClick, onFavoriteToggle, className }: P
                             product.isFavorite && 'fill-current scale-110'
                         )}
                     />
-                </button>
+                </Button>
 
                 {/* Discount badge */}
                 {product.originalPrice && (

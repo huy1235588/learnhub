@@ -6,11 +6,7 @@ export interface Product {
     image: string;
     description: string;
     fullDescription: string;
-    instructor: {
-        name: string;
-        avatar: string;
-        bio: string;
-    };
+    instructor: Instructor;
     rating: number;
     reviewCount: number;
     category: string;
@@ -19,6 +15,21 @@ export interface Product {
     isFavorite: boolean;
     students: number;
     lastUpdated: string;
+    reviews?: Review[];
+}
+
+export interface Review {
+    id: string;
+    userId: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
+}
+
+export interface Instructor {
+    name: string;
+    avatar: string;
+    bio: string;
 }
 
 export interface PaginationInfo {
@@ -26,29 +37,4 @@ export interface PaginationInfo {
     totalPages: number;
     totalItems: number;
     itemsPerPage: number;
-}
-
-export interface ProductListProps {
-    products: Product[];
-    loading?: boolean;
-    onProductClick: (product: Product) => void;
-    onFavoriteToggle: (productId: string) => void;
-    pagination?: PaginationInfo;
-    onPageChange?: (page: number) => void;
-    infiniteScroll?: boolean;
-    onLoadMore?: () => void;
-    hasMore?: boolean;
-}
-
-export interface ProductCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
-    product: Product;
-    onClick: (product: Product) => void;
-    onFavoriteToggle: (productId: string) => void;
-}
-
-export interface ProductModalProps {
-    product: Product | null;
-    isOpen: boolean;
-    onClose: () => void;
-    onFavoriteToggle: (productId: string) => void;
 }

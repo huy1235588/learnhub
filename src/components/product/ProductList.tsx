@@ -9,16 +9,19 @@ import { Filter as FilterIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Filter } from './Filter';
 import { ProductCard } from './ProductCard';
+import { ProductModal } from './ProductModal';
 
 interface ProductListProps {
     products: Product[];
-    onFavoriteToggle?: (productId: string) => void;
+    onFavoriteToggle: (productId: string) => void;
 }
 
 export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [filterValue, setFilterValue] = useState('all');
     const [showFilters, setShowFilters] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const filteredProducts = useMemo(() => {
         let tempProducts = products;
@@ -49,7 +52,17 @@ export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
     }, [products, searchQuery, filterValue]);
 
     const handleFavoriteToggle = (productId: string) => {
-        onFavoriteToggle?.(productId);
+        onFavoriteToggle(productId);
+    };
+
+    const handleProductClick = (product: Product) => {
+        setSelectedProduct(product);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedProduct(null);
     };
 
     return (
@@ -108,11 +121,19 @@ export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
                     <ProductCard
                         key={product.id}
                         product={product}
-                        // onClick={handleProductClick}
+                        onClick={handleProductClick}
                         onFavoriteToggle={handleFavoriteToggle}
                     />
                 ))}
             </div>
+
+            {/* Product Modal */}
+            <ProductModal
+                product={selectedProduct}
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                onFavoriteToggle={handleFavoriteToggle}
+            />
         </div>
     );
 }
