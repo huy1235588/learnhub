@@ -250,7 +250,7 @@ export const mockProducts: Product[] = [
         title: 'Ngữ Pháp Tiếng Anh Nền Tảng',
         price: 350000,
         originalPrice: 450000,
-        image: 'https://images.unsplash.com/photo-1517842645767-c6f90405774b?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?q=80&w=2070&auto=format&fit=crop',
         description: 'Hệ thống hóa toàn bộ kiến thức ngữ pháp từ cơ bản đến nâng cao một cách dễ hiểu.',
         fullDescription:
             'Nếu bạn cảm thấy mất gốc hoặc không chắc chắn về ngữ pháp, khóa học này là dành cho bạn. Chúng tôi giải thích cặn kẽ các thì, loại từ, cấu trúc câu và các điểm ngữ pháp quan trọng khác qua các ví dụ sinh động và bài tập thực hành.',
@@ -287,7 +287,7 @@ export const mockProducts: Product[] = [
         id: '7',
         title: 'Giao Tiếp Tiếng Anh Tổng Quát Hàng Ngày',
         price: 650000,
-        image: 'https://images.unsplash.com/photo-1532618793091-ec5fe963d3e3?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://plus.unsplash.com/premium_photo-1682093294820-095fe23ec9cc?q=80&w=2070&auto=format&fit=crop',
         description: 'Xây dựng sự tự tin khi giao tiếp về các chủ đề quen thuộc trong cuộc sống hàng ngày.',
         fullDescription:
             'Khóa học tập trung vào việc thực hành nói và phản xạ trong các tình huống giao tiếp thông thường như giới thiệu bản thân, mua sắm, hỏi đường, nói về sở thích, công việc và gia đình. Mục tiêu là giúp bạn giao tiếp một cách tự nhiên và trôi chảy.',
@@ -587,7 +587,7 @@ export const mockProducts: Product[] = [
         title: 'Làm Chủ Các Lỗi Ngữ Pháp Thường Gặp',
         price: 299000,
         originalPrice: 399000,
-        image: 'https://images.unsplash.com/photo-1593640495253-2163b71786fb?q=80&w=1932&auto=format&fit=crop',
+        image: 'https://plus.unsplash.com/premium_photo-1738825664035-3fe0d3a954e6?q=80&w=1932&auto=format&fit=crop',
         description: 'Xác định và sửa chữa những lỗi sai phổ biến về thì, giới từ, mạo từ mà người Việt hay mắc phải.',
         fullDescription:
             'Khóa học đi sâu vào các lỗi sai ngữ pháp cố hữu và giải thích nguyên nhân. Qua các bài tập thực hành, bạn sẽ hình thành thói quen sử dụng ngữ pháp một cách chính xác và tự nhiên.',
@@ -662,7 +662,7 @@ export const mockProducts: Product[] = [
         title: 'Luyện Nghe TOEIC Chuyên Sâu',
         price: 499000,
         originalPrice: 699000,
-        image: 'https://images.unsplash.com/photo-1589903308904-1010c2294c65?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?q=80&w=2070&auto=format&fit=crop',
         description: 'Tập trung vào các chiến thuật nghe hiểu cho cả 4 phần của bài thi TOEIC Listening.',
         fullDescription:
             'Khóa học phân tích chi tiết từng phần trong bài thi Nghe của TOEIC, từ tranh ảnh, hỏi-đáp, hội thoại ngắn đến bài nói chuyện dài. Học viên sẽ được luyện tập với các bài nghe có giọng đọc và tốc độ đa dạng.',
@@ -699,7 +699,7 @@ export const mockProducts: Product[] = [
         id: '18',
         title: 'TOEFL Speaking - Chinh Phục Điểm 26+',
         price: 650000,
-        image: 'https://images.unsplash.com/photo-1590650213763-d17a7ead483f?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1691026336764-f24456f76e03?q=80&w=2070&auto=format&fit=crop',
         description: 'Chiến lược trả lời cho cả câu hỏi độc lập và tích hợp trong bài thi TOEFL Speaking.',
         fullDescription:
             'Khóa học cung cấp các template (khuôn mẫu) trả lời hiệu quả, cách ghi chú nhanh và phát triển ý tưởng mạch lạc dưới áp lực thời gian. Học viên được thực hành với các đề thi mô phỏng và nhận phản hồi chi tiết.',
@@ -774,7 +774,7 @@ export const mockProducts: Product[] = [
         title: 'Phát Âm Nâng Cao: Ngữ Điệu và Nối Âm',
         price: 550000,
         originalPrice: 650000,
-        image: 'https://images.unsplash.com/photo-1519752334963-148e4646a2a2?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://plus.unsplash.com/premium_photo-1688700438435-ee6d6a799083?q=80&w=2070&auto=format&fit=crop',
         description: 'Học cách nói tiếng Anh tự nhiên như người bản xứ thông qua kỹ thuật nối âm, nuốt âm và ngữ điệu.',
         fullDescription:
             'Khóa học dành cho những ai đã có phát âm cơ bản tốt và muốn nâng cấp để nghe giống người bản xứ hơn. Bạn sẽ học các quy tắc nối âm, cách nhấn trọng âm câu và sử dụng ngữ điệu để biểu đạt cảm xúc.',
@@ -811,7 +811,7 @@ export const mockProducts: Product[] = [
         id: '21',
         title: 'Tiếng Anh cho ngành Luật (Legal English)',
         price: 1399000,
-        image: 'https://images.unsplash.com/photo-1598257006624-97212512330d?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://plus.unsplash.com/premium_photo-1661315450744-a0ba5d4a6d95?q=80&w=2070&auto=format&fit=crop',
         description: 'Thuật ngữ pháp lý, cách đọc hiểu và soạn thảo hợp đồng, văn bản pháp luật cơ bản.',
         fullDescription:
             'Khóa học cung cấp kiến thức nền tảng về hệ thống thuật ngữ pháp lý trong tiếng Anh, tập trung vào luật thương mại và hợp đồng. Học viên sẽ được thực hành phân tích các điều khoản và soạn thảo các văn bản pháp lý đơn giản.',
@@ -923,7 +923,7 @@ export const mockProducts: Product[] = [
         id: '24',
         title: 'IELTS Life Skills - A1/B1',
         price: 899000,
-        image: 'https://images.unsplash.com/photo-1516534778569-5e72b7f3b4ae?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=2070&auto=format&fit=crop',
         description:
             'Khóa học luyện thi chứng chỉ IELTS Life Skills cấp độ A1 và B1 cho mục đích định cư, đoàn tụ gia đình tại Anh.',
         fullDescription:
@@ -1037,7 +1037,7 @@ export const mockProducts: Product[] = [
         title: 'Luyện thi Cambridge C1 Advanced (CAE)',
         price: 1599000,
         originalPrice: 1999000,
-        image: 'https://images.unsplash.com/photo-1491841550275-5b462bf9f59f?q=80&w=2070&auto=format&fit=crop',
+        image: 'https://plus.unsplash.com/premium_photo-1681248156472-ce2223f2fce9&w=2070&auto=format&fit=crop',
         description: 'Chinh phục kỳ thi C1 Advanced với chiến lược toàn diện cho 5 phần thi.',
         fullDescription:
             'Khóa học cung cấp kiến thức và kỹ năng chuyên sâu để vượt qua kỳ thi Cambridge C1 Advanced (CAE), chứng minh khả năng sử dụng tiếng Anh thành thạo trong môi trường học thuật và chuyên nghiệp.',
