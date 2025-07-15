@@ -4,24 +4,122 @@ import { SearchBar } from '@/components/common/SearchBar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { ApiResponse, ProductsApiResponse } from '@/types/api';
 import { Product } from '@/types/product';
-import { Filter as FilterIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Filter as FilterIcon, WifiOff } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Filter } from './Filter';
 import { ProductCard } from './ProductCard';
+import { ProductCardSkeleton } from './ProductCardSkeleton';
 import { ProductModal } from './ProductModal';
 
 interface ProductListProps {
-    products: Product[];
-    onFavoriteToggle: (productId: string) => void;
+    apiUrl?: string; // Optional API URL for fetching products
 }
 
-export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
+const ITEMS_PER_PAGE = 9; // Default items per page for pagination
+
+export function ProductList({ apiUrl }: ProductListProps) {
+    // State for managing products and pagination
+    const [products, setProducts] = useState<Product[]>([]);
+    const [favoriteIds, setFavoriteIds] = useState(new Set<string>());
+
     const [searchQuery, setSearchQuery] = useState('');
     const [filterValue, setFilterValue] = useState('all');
     const [showFilters, setShowFilters] = useState(false);
     const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [totalProducts, setTotalProducts] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const userId = 'user123'; // Hardcoded userId for the mock API [cite: 9]
+
+    // Fetch products on initial load
+    useEffect(() => {
+        const fetchInitialProducts = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const response = await fetch(`${apiUrl}?limit=${ITEMS_PER_PAGE}&page=1&userId=${userId}`);
+                const result: ApiResponse<ProductsApiResponse> = await response.json();
+
+                if (result.success && result.data) {
+                    setProducts(result.data.products);
+                    setTotalProducts(result.data.pagination.totalItems);
+                } else {
+                    throw new Error(result.error || 'Không thể tải danh sách sản phẩm.');
+                }
+            } catch (err: unknown) {
+                const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
+                setError(errorMessage);
+                console.error('Failed to fetch products:', err);
+                toast.error(errorMessage);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        const fetchFavorites = async () => {
+            try {
+                const response = await fetch(`/api/favorites?userId=${userId}&userId=${userId}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // Extract product IDs from the API response and update state
+                    const ids = new Set<string>(result.data.products.map((p: Product) => p.id));
+                    setFavoriteIds(ids);
+                } else {
+                    throw new Error(result.error || 'Không thể tải danh sách yêu thích.');
+                }
+            } catch (err: unknown) {
+                let errorMessage = 'An unexpected error occurred.';
+                // Check if the error is an actual Error object before accessing properties
+                if (err instanceof Error) {
+                    errorMessage = err.message;
+                }
+
+                setError(errorMessage);
+                console.error('Failed to fetch favorites:', err);
+                toast.error(errorMessage);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchInitialProducts();
+        fetchFavorites();
+    }, [apiUrl]);
+
+    // Load more products when the user clicks "Load More"
+    const handleLoadMore = async () => {
+        if (isLoadMoreLoading) return;
+
+        setIsLoadMoreLoading(true);
+        const nextPage = currentPage + 1;
+
+        try {
+            const response = await fetch(`/api/products?limit=${ITEMS_PER_PAGE}&page=${nextPage}`);
+            const result: ApiResponse<ProductsApiResponse> = await response.json();
+
+            if (result.success && result.data) {
+                // Nối sản phẩm mới vào danh sách hiện có
+                setProducts((prevProducts) => [...prevProducts, ...result.data.products]);
+                setCurrentPage(nextPage);
+            } else {
+                throw new Error(result.error || 'Không thể tải thêm sản phẩm.');
+            }
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
+            toast.error(errorMessage);
+        } finally {
+            setIsLoadMoreLoading(false);
+        }
+    };
 
     const filteredProducts = useMemo(() => {
         let tempProducts = products;
@@ -51,8 +149,64 @@ export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
         return tempProducts;
     }, [products, searchQuery, filterValue]);
 
-    const handleFavoriteToggle = (productId: string) => {
-        onFavoriteToggle(productId);
+    const handleFavoriteToggle = async (productId: string) => {
+        // Find current product and toggle favorite status
+        const isCurrentlyFavorite = favoriteIds.has(productId);
+        const action = isCurrentlyFavorite ? 'remove' : 'add';
+
+        // Toggle favorite status
+        const newFavoriteIds = new Set(favoriteIds);
+        if (action === 'add') {
+            newFavoriteIds.add(productId);
+        } else {
+            newFavoriteIds.delete(productId);
+        }
+        setFavoriteIds(newFavoriteIds);
+
+        // Show toast notification
+        if (action === 'add') {
+            toast.success('Đã thêm vào yêu thích', {
+                position: 'top-right',
+                duration: 2000,
+                icon: '❤️',
+                richColors: true,
+            });
+        } else {
+            toast.info('Đã bỏ yêu thích', {
+                position: 'top-right',
+                duration: 2000,
+                richColors: true,
+            });
+        }
+
+        // Update product's favorite status
+        try {
+            const response = await fetch('/api/favorites', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId,
+                    productId,
+                    action, // 'add' hoặc 'remove'
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                // Nếu API thất bại, hoàn tác lại thay đổi trên giao diện
+                throw new Error(result.error || 'Có lỗi xảy ra');
+            }
+            // Nếu API thành công, không cần làm gì thêm vì UI đã được cập nhật
+        } catch (error) {
+            console.error('Failed to update favorite status:', error);
+            // Hoàn tác lại trạng thái trên UI nếu có lỗi
+            setFavoriteIds(new Set(favoriteIds));
+            // Hiển thị thông báo lỗi
+            toast.error('Cập nhật thất bại, vui lòng thử lại.');
+        }
     };
 
     const handleProductClick = (product: Product) => {
@@ -70,20 +224,59 @@ export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
         return filteredProducts.find((p) => p.id === selectedProductId) || null;
     }, [selectedProductId, filteredProducts]);
 
+    const renderContent = () => {
+        // --- 1. Loading State ---
+        if (isLoading) {
+            return (
+                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+                    {Array.from({ length: 6 }).map((_, index) => (
+                        <ProductCardSkeleton key={index} />
+                    ))}
+                </div>
+            );
+        }
+
+        // --- 2. Error State ---
+        if (error) {
+            return (
+                <Card className='col-span-full flex flex-col items-center justify-center p-12 text-center'>
+                    <WifiOff className='h-16 w-16 text-destructive mb-4' />
+                    <h3 className='text-xl font-semibold'>Đã có lỗi xảy ra</h3>
+                    <p className='text-muted-foreground'>{error}</p>
+                </Card>
+            );
+        }
+
+        // --- 3. No Products Found ---
+        if (filteredProducts.length === 0) {
+            return (
+                <Card className='col-span-full flex flex-col items-center justify-center p-12 text-center'>
+                    <h3 className='text-xl font-semibold'>Không tìm thấy khóa học nào</h3>
+                    <p className='text-muted-foreground'>Vui lòng thử lại với từ khóa hoặc bộ lọc khác.</p>
+                </Card>
+            );
+        }
+
+        // --- 4. Product Grid ---
+        return (
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+                {filteredProducts.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        isFavorite={favoriteIds.has(product.id)}
+                        onClick={handleProductClick}
+                        onFavoriteToggle={handleFavoriteToggle}
+                    />
+                ))}
+            </div>
+        );
+    };
+
     return (
         <div className='container mx-auto px-4 py-8 space-y-8'>
-            {/* Header Section */}
-            <div className='text-center space-y-4'>
-                <h1 className='text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent'>
-                    Khám phá khóa học
-                </h1>
-                <p className='text-lg text-muted-foreground max-w-2xl mx-auto'>
-                    Tìm kiếm và lựa chọn khóa học phù hợp với nhu cầu học tập của bạn
-                </p>
-            </div>
-
             {/* Search and Filter Section */}
-            <Card className='p-6'>
+            <Card className='p-6 pt-0'>
                 <div className='space-y-4'>
                     {/* Top row - Search and view controls */}
                     <div className='flex flex-col sm:flex-row gap-4 justify-between items-center'>
@@ -112,7 +305,7 @@ export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
 
                             {/* Results count */}
                             <div className='text-sm text-muted-foreground'>
-                                Tìm thấy <span className='font-semibold'>{filteredProducts.length}</span> khóa học
+                                Tìm thấy <span className='font-semibold'>{totalProducts}</span> khóa học
                                 {searchQuery && <span> cho &ldquo;{searchQuery}&rdquo;</span>}
                             </div>
                         </div>
@@ -121,20 +314,21 @@ export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
             </Card>
 
             {/* Product Grid */}
-            <div className='transition-all duration-300 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-                {filteredProducts.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                        onClick={handleProductClick}
-                        onFavoriteToggle={handleFavoriteToggle}
-                    />
-                ))}
-            </div>
+            {renderContent()}
+
+            {/* Load More Button */}
+            {!isLoading && !error && products.length < totalProducts && (
+                <div className='text-center mt-8'>
+                    <Button onClick={handleLoadMore} disabled={isLoadMoreLoading} size='lg'>
+                        {isLoadMoreLoading ? 'Đang tải...' : 'Xem thêm'}
+                    </Button>
+                </div>
+            )}
 
             {/* Product Modal */}
             <ProductModal
                 product={selectedProduct}
+                isFavorite={selectedProduct ? favoriteIds.has(selectedProduct.id) : false}
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onFavoriteToggle={handleFavoriteToggle}

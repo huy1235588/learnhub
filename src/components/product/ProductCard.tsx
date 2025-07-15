@@ -10,11 +10,12 @@ import Image from 'next/image';
 interface ProductCardProps {
     product: Product;
     onClick?: (product: Product) => void;
+    isFavorite?: boolean;
     onFavoriteToggle: (productId: string) => void;
     className?: string;
 }
 
-export function ProductCard({ product, onClick, onFavoriteToggle, className }: ProductCardProps) {
+export function ProductCard({ product, isFavorite, onClick, onFavoriteToggle, className }: ProductCardProps) {
     const handleCardClick = () => {
         onClick?.(product);
     };
@@ -51,15 +52,10 @@ export function ProductCard({ product, onClick, onFavoriteToggle, className }: P
                     className={cn(
                         'absolute top-3 right-3 p-2 rounded-full transition-all duration-200',
                         'bg-white/90 hover:bg-white shadow-sm hover:shadow-md hover:text-red-500',
-                        product.isFavorite ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
+                        isFavorite ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
                     )}
                 >
-                    <Heart
-                        className={cn(
-                            'h-4 w-4 transition-transform duration-200',
-                            product.isFavorite && 'fill-current scale-110'
-                        )}
-                    />
+                    <Heart className={cn('h-4 w-4 transition-transform duration-200', isFavorite && 'fill-current scale-110')} />
                 </Button>
 
                 {/* Discount badge */}

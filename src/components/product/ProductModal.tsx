@@ -12,12 +12,13 @@ import { useState } from 'react';
 
 interface ProductModalProps {
     product: Product | null;
+    isFavorite?: boolean;
     isOpen: boolean;
     onClose: () => void;
     onFavoriteToggle: (productId: string) => void;
 }
 
-export function ProductModal({ product, isOpen, onClose, onFavoriteToggle }: ProductModalProps) {
+export function ProductModal({ product, isFavorite, isOpen, onClose, onFavoriteToggle }: ProductModalProps) {
     const [isAddingToCart, setIsAddingToCart] = useState(false);
 
     if (!product) return null;
@@ -98,10 +99,10 @@ export function ProductModal({ product, isOpen, onClose, onFavoriteToggle }: Pro
                                     <Heart
                                         className={cn(
                                             'h-5 w-5 mr-2 transition-transform duration-200',
-                                            product.isFavorite ? 'fill-current text-red-500' : 'text-gray-500'
+                                            isFavorite ? 'fill-current text-red-500' : 'text-gray-500'
                                         )}
                                     />
-                                    {product.isFavorite ? 'Đã yêu thích' : 'Thêm vào yêu thích'}
+                                    {isFavorite ? 'Đã yêu thích' : 'Thêm vào yêu thích'}
                                 </Button>
                             </div>
                         </div>

@@ -12,7 +12,6 @@ export interface Product {
     category: string;
     duration: string;
     tags: string[];
-    isFavorite: boolean;
     students: number;
     lastUpdated: string;
     reviews?: Review[];

@@ -9,12 +9,14 @@ import { cn } from '@/lib/utils';
 import { Bell, Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export function Header() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const router = useRouter();
 
     const navigation = [
         { name: 'Khóa học', href: '/courses' },
@@ -109,7 +111,14 @@ export function Header() {
                         </Button>
 
                         {/* Favorites */}
-                        <Button variant='ghost' size='sm' className='hidden sm:flex hover:bg-emerald-50 hover:text-emerald-600'>
+                        <Button
+                            variant='ghost'
+                            size='sm'
+                            className='hidden sm:flex hover:bg-emerald-50 hover:text-emerald-600'
+                            onClick={() => {
+                                router.push('/favorite');
+                            }}
+                        >
                             <Heart className='h-5 w-5' />
                         </Button>
 
@@ -183,6 +192,10 @@ export function Header() {
                                                 <Button
                                                     variant='ghost'
                                                     className='w-full justify-start p-3 h-auto hover:bg-emerald-50 hover:text-emerald-600'
+                                                    onClick={() => {
+                                                        setIsMobileMenuOpen(false);
+                                                        router.push('/favorite');
+                                                    }}
                                                 >
                                                     <Heart className='h-5 w-5 mr-3' />
                                                     <span>Yêu thích</span>

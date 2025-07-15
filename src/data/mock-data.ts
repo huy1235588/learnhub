@@ -20,7 +20,6 @@ export const mockProducts: Product[] = [
         category: 'IELTS, TOEIC, TOEFL, CPE',
         duration: '16 tuần',
         tags: ['IELTS', 'Exam Prep', 'Academic English', 'Band 8'],
-        isFavorite: false,
         students: 5432,
         lastUpdated: '2025-06-15',
         reviews: [
@@ -115,7 +114,6 @@ export const mockProducts: Product[] = [
         category: 'Business English Communication',
         duration: '10 tuần',
         tags: ['Business English', 'Corporate Communication', 'Presentation'],
-        isFavorite: false,
         students: 4321,
         lastUpdated: '2025-05-20',
         reviews: [
@@ -153,7 +151,6 @@ export const mockProducts: Product[] = [
         category: 'English Pronunciation',
         duration: '30 giờ',
         tags: ['Pronunciation', 'Accent Reduction', 'Speaking'],
-        isFavorite: false,
         students: 3789,
         lastUpdated: '2025-07-01',
         reviews: [
@@ -192,7 +189,6 @@ export const mockProducts: Product[] = [
         category: 'IELTS, TOEIC, TOEFL, CPE',
         duration: '8 tuần',
         tags: ['TOEIC', 'Exam Prep', 'Listening', 'Reading'],
-        isFavorite: false,
         students: 4110,
         lastUpdated: '2025-06-25',
         reviews: [
@@ -230,7 +226,6 @@ export const mockProducts: Product[] = [
         category: 'Job Interview English Communication',
         duration: '4 tuần',
         tags: ['Job Interview', 'Career', 'Communication'],
-        isFavorite: false,
         students: 2500,
         lastUpdated: '2025-07-05',
         reviews: [
@@ -269,7 +264,6 @@ export const mockProducts: Product[] = [
         category: 'English Grammar',
         duration: '12 tuần',
         tags: ['Grammar', 'Foundation', 'English Basics'],
-        isFavorite: false,
         students: 3105,
         lastUpdated: '2025-05-10',
         reviews: [
@@ -307,7 +301,6 @@ export const mockProducts: Product[] = [
         category: 'General English Conversation',
         duration: '45 giờ',
         tags: ['Conversation', 'Daily English', 'Speaking'],
-        isFavorite: false,
         students: 3567,
         lastUpdated: '2025-06-30',
         reviews: [
@@ -346,7 +339,6 @@ export const mockProducts: Product[] = [
         category: 'IELTS, TOEIC, TOEFL, CPE',
         duration: '14 tuần',
         tags: ['TOEFL', 'Exam Prep', 'Academic English'],
-        isFavorite: false,
         students: 4200,
         lastUpdated: '2025-06-18',
         reviews: [
@@ -384,7 +376,6 @@ export const mockProducts: Product[] = [
         category: 'Professional English',
         duration: '8 tuần',
         tags: ['Professional English', 'IT', 'Tech', 'Developer'],
-        isFavorite: false,
         students: 1980,
         lastUpdated: '2025-07-08',
         reviews: [
@@ -423,7 +414,6 @@ export const mockProducts: Product[] = [
         category: 'IELTS, TOEIC, TOEFL, CPE',
         duration: '20 tuần',
         tags: ['CPE', 'C2 Proficiency', 'Cambridge Exam', 'Mastery'],
-        isFavorite: false,
         students: 1550,
         lastUpdated: '2025-06-01',
         reviews: [
@@ -461,7 +451,6 @@ export const mockProducts: Product[] = [
         category: 'General English Conversation',
         duration: '8 tuần',
         tags: ['Debate', 'Advanced Conversation', 'Public Speaking'],
-        isFavorite: false,
         students: 1890,
         lastUpdated: '2025-07-10',
         reviews: [
@@ -500,7 +489,6 @@ export const mockProducts: Product[] = [
         category: 'Business English Communication',
         duration: '6 tuần',
         tags: ['Business Writing', 'Email Etiquette', 'Reporting'],
-        isFavorite: false,
         students: 2800,
         lastUpdated: '2025-07-02',
         reviews: [
@@ -538,7 +526,6 @@ export const mockProducts: Product[] = [
         category: 'IELTS, TOEIC, TOEFL, CPE',
         duration: '5 tuần',
         tags: ['IELTS', 'Writing Task 2', 'Essay Writing'],
-        isFavorite: false,
         students: 2555,
         lastUpdated: '2025-06-28',
         reviews: [
@@ -576,7 +563,6 @@ export const mockProducts: Product[] = [
         category: 'Professional English',
         duration: '12 tuần',
         tags: ['Medical English', 'Healthcare', 'Professional'],
-        isFavorite: false,
         students: 1240,
         lastUpdated: '2025-07-01',
         reviews: [
@@ -615,7 +601,6 @@ export const mockProducts: Product[] = [
         category: 'English Grammar',
         duration: '4 tuần',
         tags: ['Grammar', 'Common Mistakes', 'Error Correction'],
-        isFavorite: false,
         students: 2900,
         lastUpdated: '2025-07-11',
         reviews: [
@@ -653,7 +638,6 @@ export const mockProducts: Product[] = [
         category: 'General English Conversation',
         duration: '3 tuần',
         tags: ['Travel English', 'Conversation', 'Survival English'],
-        isFavorite: false,
         students: 4500,
         lastUpdated: '2025-05-15',
         reviews: [
@@ -692,7 +676,6 @@ export const mockProducts: Product[] = [
         category: 'IELTS, TOEIC, TOEFL, CPE',
         duration: '6 tuần',
         tags: ['TOEIC', 'Listening', 'Exam Prep'],
-        isFavorite: false,
         students: 2100,
         lastUpdated: '2025-06-20',
         reviews: [
@@ -730,7 +713,6 @@ export const mockProducts: Product[] = [
         category: 'IELTS, TOEIC, TOEFL, CPE',
         duration: '7 tuần',
         tags: ['TOEFL', 'Speaking', 'Exam Prep'],
-        isFavorite: false,
         students: 1750,
         lastUpdated: '2025-07-03',
         reviews: [
@@ -768,7 +750,6 @@ export const mockProducts: Product[] = [
         category: 'Business English Communication',
         duration: '10 tuần',
         tags: ['Entrepreneurship', 'Pitching', 'Startup', 'Business English'],
-        isFavorite: false,
         students: 950,
         lastUpdated: '2025-06-29',
         reviews: [
@@ -807,7 +788,6 @@ export const mockProducts: Product[] = [
         category: 'English Pronunciation',
         duration: '6 tuần',
         tags: ['Intonation', 'Connected Speech', 'Pronunciation', 'Advanced'],
-        isFavorite: false,
         students: 1500,
         lastUpdated: '2025-07-09',
         reviews: [
@@ -845,7 +825,6 @@ export const mockProducts: Product[] = [
         category: 'Professional English',
         duration: '15 tuần',
         tags: ['Legal English', 'Law', 'Contracts'],
-        isFavorite: false,
         students: 850,
         lastUpdated: '2025-06-15',
         reviews: [
@@ -883,7 +862,6 @@ export const mockProducts: Product[] = [
         category: 'English Grammar',
         duration: '8 tuần',
         tags: ['Applied Grammar', 'Speaking', 'Writing'],
-        isFavorite: false,
         students: 2300,
         lastUpdated: '2025-07-05',
         reviews: [
@@ -922,7 +900,6 @@ export const mockProducts: Product[] = [
         category: 'Business English Communication',
         duration: '5 tuần',
         tags: ['Presentation Skills', 'Public Speaking', 'Business English'],
-        isFavorite: false,
         students: 1950,
         lastUpdated: '2025-07-12',
         reviews: [
@@ -961,7 +938,6 @@ export const mockProducts: Product[] = [
         category: 'IELTS, TOEIC, TOEFL, CPE',
         duration: '6 tuần',
         tags: ['IELTS Life Skills', 'UKVI', 'Speaking', 'Listening'],
-        isFavorite: false,
         students: 600,
         lastUpdated: '2025-06-11',
         reviews: [
@@ -1000,7 +976,6 @@ export const mockProducts: Product[] = [
         category: 'General English Conversation',
         duration: '10 tuần',
         tags: ['Absolute Beginner', 'English Basics', 'Conversation'],
-        isFavorite: false,
         students: 5200,
         lastUpdated: '2025-07-07',
         reviews: [
@@ -1038,7 +1013,6 @@ export const mockProducts: Product[] = [
         category: 'Job Interview English Communication',
         duration: '6 tuần',
         tags: ['Job Interview', 'Leadership', 'Management', 'Career'],
-        isFavorite: false,
         students: 950,
         lastUpdated: '2025-07-10',
         reviews: [
@@ -1077,7 +1051,6 @@ export const mockProducts: Product[] = [
         category: 'IELTS, TOEIC, TOEFL, CPE',
         duration: '18 tuần',
         tags: ['CAE', 'C1 Advanced', 'Cambridge Exam', 'Exam Prep'],
-        isFavorite: false,
         students: 1100,
         lastUpdated: '2025-06-25',
         reviews: [
@@ -1115,7 +1088,6 @@ export const mockProducts: Product[] = [
         category: 'Professional English',
         duration: '9 tuần',
         tags: ['Marketing', 'Sales', 'Business English'],
-        isFavorite: false,
         students: 1600,
         lastUpdated: '2025-07-04',
     },
@@ -1137,7 +1109,6 @@ export const mockProducts: Product[] = [
         category: 'English Grammar',
         duration: '10 tuần',
         tags: ['Vocabulary', 'Academic English', 'AWL'],
-        isFavorite: false,
         students: 3200,
         lastUpdated: '2025-07-08',
     },
@@ -1160,7 +1131,6 @@ export const mockProducts: Product[] = [
         category: 'Business English Communication',
         duration: '4 tuần',
         tags: ['Networking', 'Small Talk', 'Business Skills'],
-        isFavorite: false,
         students: 2150,
         lastUpdated: '2025-07-13',
     },
