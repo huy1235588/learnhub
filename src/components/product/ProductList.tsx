@@ -3,6 +3,8 @@
 import { SearchBar } from '@/components/common/SearchBar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useFavorites } from '@/hooks/useFavorites';
+import { LocalStorageUtils } from '@/lib/localStorageUtils';
 import { cn } from '@/lib/utils';
 import { ApiResponse, ProductsApiResponse } from '@/types/api';
 import { Product } from '@/types/product';
@@ -19,11 +21,12 @@ interface ProductListProps {
 }
 
 const ITEMS_PER_PAGE = 9; // Default items per page for pagination
+const MAX_VIEWED_PRODUCTS = 8; // Maximum number of viewed products to keep
 
 export function ProductList({ apiUrl }: ProductListProps) {
     // State for managing products and pagination
     const [products, setProducts] = useState<Product[]>([]);
-    const [favoriteIds, setFavoriteIds] = useState(new Set<string>());
+    const { toggleFavorite, favorites } = useFavorites();
 
     const [searchQuery, setSearchQuery] = useState('');
     const [filterValue, setFilterValue] = useState('all');
@@ -37,7 +40,7 @@ export function ProductList({ apiUrl }: ProductListProps) {
     const [totalProducts, setTotalProducts] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const userId = 'user123'; // Hardcoded userId for the mock API [cite: 9]
+    const userId = 'user123'; // Hardcoded userId for the mock API
 
     // Fetch products on initial load
     useEffect(() => {
@@ -64,35 +67,7 @@ export function ProductList({ apiUrl }: ProductListProps) {
             }
         };
 
-        const fetchFavorites = async () => {
-            try {
-                const response = await fetch(`/api/favorites?userId=${userId}&userId=${userId}`);
-                const result = await response.json();
-
-                if (result.success) {
-                    // Extract product IDs from the API response and update state
-                    const ids = new Set<string>(result.data.products.map((p: Product) => p.id));
-                    setFavoriteIds(ids);
-                } else {
-                    throw new Error(result.error || 'Không thể tải danh sách yêu thích.');
-                }
-            } catch (err: unknown) {
-                let errorMessage = 'An unexpected error occurred.';
-                // Check if the error is an actual Error object before accessing properties
-                if (err instanceof Error) {
-                    errorMessage = err.message;
-                }
-
-                setError(errorMessage);
-                console.error('Failed to fetch favorites:', err);
-                toast.error(errorMessage);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchInitialProducts();
-        fetchFavorites();
     }, [apiUrl]);
 
     // Load more products when the user clicks "Load More"
@@ -121,6 +96,7 @@ export function ProductList({ apiUrl }: ProductListProps) {
         }
     };
 
+    // Filter products based on search query and filter value
     const filteredProducts = useMemo(() => {
         let tempProducts = products;
 
@@ -149,22 +125,14 @@ export function ProductList({ apiUrl }: ProductListProps) {
         return tempProducts;
     }, [products, searchQuery, filterValue]);
 
+    // Function to handle product view tracking
     const handleFavoriteToggle = async (productId: string) => {
-        // Find current product and toggle favorite status
-        const isCurrentlyFavorite = favoriteIds.has(productId);
-        const action = isCurrentlyFavorite ? 'remove' : 'add';
-
-        // Toggle favorite status
-        const newFavoriteIds = new Set(favoriteIds);
-        if (action === 'add') {
-            newFavoriteIds.add(productId);
-        } else {
-            newFavoriteIds.delete(productId);
-        }
-        setFavoriteIds(newFavoriteIds);
+        const action = toggleFavorite(productId);
 
         // Show toast notification
-        if (action === 'add') {
+        if (action === 'added') {
+            LocalStorageUtils.addItem('favoriteProductIds', productId);
+
             toast.success('Đã thêm vào yêu thích', {
                 position: 'top-right',
                 duration: 2000,
@@ -172,46 +140,33 @@ export function ProductList({ apiUrl }: ProductListProps) {
                 richColors: true,
             });
         } else {
+            LocalStorageUtils.removeItem('favoriteProductIds', productId);
+
             toast.info('Đã bỏ yêu thích', {
                 position: 'top-right',
                 duration: 2000,
                 richColors: true,
             });
         }
-
-        // Update product's favorite status
-        try {
-            const response = await fetch('/api/favorites', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId,
-                    productId,
-                    action, // 'add' hoặc 'remove'
-                }),
-            });
-
-            const result = await response.json();
-
-            if (!result.success) {
-                // Nếu API thất bại, hoàn tác lại thay đổi trên giao diện
-                throw new Error(result.error || 'Có lỗi xảy ra');
-            }
-            // Nếu API thành công, không cần làm gì thêm vì UI đã được cập nhật
-        } catch (error) {
-            console.error('Failed to update favorite status:', error);
-            // Hoàn tác lại trạng thái trên UI nếu có lỗi
-            setFavoriteIds(new Set(favoriteIds));
-            // Hiển thị thông báo lỗi
-            toast.error('Cập nhật thất bại, vui lòng thử lại.');
-        }
     };
 
+    // Handle product click to open modal and track view history
     const handleProductClick = (product: Product) => {
         setSelectedProductId(product.id);
         setIsModalOpen(true);
+
+        // Get viewed products from localStorage
+        const stored = typeof window !== 'undefined' ? window.localStorage.getItem('viewedProductIds') : null;
+        const viewedProductIds = stored ? JSON.parse(stored) : [];
+
+        // Delete the product if it already exists in the viewed list
+        const filteredViewedIds = viewedProductIds.filter((id: string) => id !== product.id);
+        const updatedViewedIds = [product.id, ...filteredViewedIds].slice(0, MAX_VIEWED_PRODUCTS); // Limit to last 8 viewed
+
+        // Save to localStorage
+        if (typeof window !== 'undefined') {
+            window.localStorage.setItem('viewedProductIds', JSON.stringify(updatedViewedIds));
+        }
     };
 
     const handleCloseModal = () => {
@@ -264,7 +219,7 @@ export function ProductList({ apiUrl }: ProductListProps) {
                     <ProductCard
                         key={product.id}
                         product={product}
-                        isFavorite={favoriteIds.has(product.id)}
+                        isFavorite={favorites.includes(product.id)}
                         onClick={handleProductClick}
                         onFavoriteToggle={handleFavoriteToggle}
                     />
@@ -328,7 +283,7 @@ export function ProductList({ apiUrl }: ProductListProps) {
             {/* Product Modal */}
             <ProductModal
                 product={selectedProduct}
-                isFavorite={selectedProduct ? favoriteIds.has(selectedProduct.id) : false}
+                isFavorite={selectedProduct ? favorites.includes(selectedProduct.id) : false}
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onFavoriteToggle={handleFavoriteToggle}

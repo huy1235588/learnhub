@@ -33,8 +33,6 @@ export function ProductModal({ product, isFavorite, isOpen, onClose, onFavoriteT
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setIsAddingToCart(false);
-        // Here you would typically add the product to cart
-        console.log('Added to cart:', product.id);
     };
 
     const formatPrice = (price: number) => {

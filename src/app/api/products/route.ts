@@ -17,6 +17,20 @@ export async function GET(request: NextRequest) {
         const sortBy = searchParams.get('sortBy') || 'title'; // title, price, rating, students, lastUpdated
         const sortOrder = searchParams.get('sortOrder') || 'asc'; // asc, desc
 
+        const ids = searchParams.get('ids');
+        if (ids) {
+            // If 'ids' parameter is provided, filter products by these IDs
+            const idList = ids.split(',').map((id) => id.trim());
+            const filteredProducts = mockProducts.filter((product) => idList.includes(product.id));
+            return NextResponse.json({
+                success: true,
+                data: {
+                    products: filteredProducts,
+                    total: filteredProducts.length,
+                },
+            });
+        }
+
         // Pagination
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '12');
@@ -72,7 +86,7 @@ export async function GET(request: NextRequest) {
                     break;
                 case 'title':
                 default:
-                    comparison = a.title.localeCompare(b.title);
+                    comparison = parseInt(a.id, 10) - parseInt(b.id, 10);
                     break;
             }
 

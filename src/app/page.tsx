@@ -1,4 +1,5 @@
 import { ProductList } from '@/components/product/ProductList';
+import { ViewedProductsList } from '@/components/product/ViewedProductsList';
 
 export default function Home() {
     return (
@@ -15,6 +16,9 @@ export default function Home() {
 
             {/* Product List Section */}
             <ProductList apiUrl='/api/products' />
+
+            {/* Viewed Product */}
+            <ViewedProductsList />
         </div>
     );
 }
