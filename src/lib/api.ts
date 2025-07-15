@@ -1,18 +1,9 @@
-import {
-    ApiResponse,
-    FavoriteApiResponse,
-    FavoriteRequest,
-    FavoriteUpdateResponse,
-    FiltersApiResponse,
-    ProductDetailApiResponse,
-    ProductQueryParams,
-    ProductsApiResponse,
-} from '@/types/api';
+import { ApiResponse, ProductDetailApiResponse, ProductQueryParams, ProductsApiResponse } from '@/types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 // Utility function để xây dựng query string
-function buildQueryString(params: Record<string, string | number | boolean | string[] | undefined | null>): string {
+function buildQueryString(params: ProductQueryParams): string {
     const searchParams = new URLSearchParams();
 
     Object.entries(params).forEach(([key, value]) => {
@@ -66,41 +57,7 @@ export const productsApi = {
     },
 };
 
-// Filters API
-export const filtersApi = {
-    // Lấy tất cả bộ lọc có sẵn
-    getFilters: async (): Promise<ApiResponse<FiltersApiResponse>> => {
-        return apiFetch<FiltersApiResponse>('/api/filters');
-    },
-};
-
-// Favorite API
-export const FavoriteApi = {
-    // Lấy danh sách Favorite của user
-    getFavorite: async (userId: string): Promise<ApiResponse<FavoriteApiResponse>> => {
-        return apiFetch<FavoriteApiResponse>(`/api/favorite?userId=${userId}`);
-    },
-
-    // Thêm/bỏ sản phẩm khỏi Favorite
-    updateFavorite: async (request: FavoriteRequest): Promise<ApiResponse<FavoriteUpdateResponse>> => {
-        return apiFetch<FavoriteUpdateResponse>('/api/favorite', {
-            method: 'POST',
-            body: JSON.stringify(request),
-        });
-    },
-};
-
-// Suggestions API (đã có sẵn)
-export const suggestionsApi = {
-    getSuggestions: async (userId: string): Promise<ApiResponse<SuggestionsApiResponse>> => {
-        return apiFetch(`/api/suggestions?userId=${userId}`);
-    },
-};
-
 // Export tất cả APIs
 export const api = {
     products: productsApi,
-    filters: filtersApi,
-    Favorite: FavoriteApi,
-    suggestions: suggestionsApi,
 };
