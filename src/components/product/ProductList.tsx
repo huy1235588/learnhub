@@ -20,7 +20,7 @@ export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [filterValue, setFilterValue] = useState('all');
     const [showFilters, setShowFilters] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const filteredProducts = useMemo(() => {
@@ -56,14 +56,19 @@ export function ProductList({ products, onFavoriteToggle }: ProductListProps) {
     };
 
     const handleProductClick = (product: Product) => {
-        setSelectedProduct(product);
+        setSelectedProductId(product.id);
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setSelectedProduct(null);
+        setSelectedProductId(null);
     };
+
+    const selectedProduct = useMemo(() => {
+        if (!selectedProductId) return null;
+        return filteredProducts.find((p) => p.id === selectedProductId) || null;
+    }, [selectedProductId, filteredProducts]);
 
     return (
         <div className='container mx-auto px-4 py-8 space-y-8'>
