@@ -4,18 +4,28 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useCart } from '@/contexts/CartContext';
 import { cn } from '@/lib/utils';
 import { Bell, Heart, Menu, ShoppingCart, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const router = useRouter();
+    const { cartCount } = useCart();
 
+    // Get currnet pathname
+    const pathname = usePathname();
+    const isHomePage = pathname === '/';
+
+    // Check if header should be transparent
+    const isTransparent = !isHomePage || isScrolled;
+
+    // Navigation items
     const navigation = [
         { name: 'Khóa học', href: '/' },
         { name: 'Giáo viên', href: '/' },
@@ -35,7 +45,7 @@ export function Header() {
         <header
             className={cn(
                 'fixed top-0 z-50 w-full transition-all duration-300',
-                isScrolled ? 'bg-white/90 backdrop-blur-sm shadow-md text-gray-800' : 'bg-transparent text-white'
+                isTransparent ? 'bg-white/90 backdrop-blur-sm shadow-md text-gray-800' : 'bg-transparent text-white'
             )}
         >
             <div className='container mx-auto px-4'>
@@ -61,7 +71,7 @@ export function Header() {
                                     href={item.href}
                                     className={cn(
                                         'flex items-center space-x-1 px-4 py-2 font-medium transition-all duration-200 rounded-lg group',
-                                        isScrolled
+                                        isTransparent
                                             ? 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-100'
                                             : 'text-white hover:text-white/80 hover:bg-white/20'
                                     )}
@@ -108,7 +118,7 @@ export function Header() {
                         >
                             <ShoppingCart className='h-5 w-5' />
                             <Badge className='absolute -top-1 -right-1 h-5 w-5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs rounded-full flex items-center justify-center'>
-                                2
+                                {cartCount}
                             </Badge>
                         </Button>
 
