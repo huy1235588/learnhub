@@ -7,17 +7,17 @@ import { siFacebook, siInstagram, siX, siYoutube } from 'simple-icons';
 
 export function Footer() {
     const companyLinks = [
-        { name: 'Về chúng tôi', href: '/about', description: 'Câu chuyện của chúng tôi' },
-        { name: 'Tuyển dụng', href: '/careers', description: 'Cơ hội nghề nghiệp', badge: 'Đang tuyển' },
-        { name: 'Báo chí', href: '/press', description: 'Tin tức & báo chí' },
-        { name: 'Blog', href: '/blog', description: 'Bài viết hữu ích' },
+        { name: 'Về chúng tôi', href: '/', description: 'Câu chuyện của chúng tôi' },
+        { name: 'Tuyển dụng', href: '/', description: 'Cơ hội nghề nghiệp', badge: 'Đang tuyển' },
+        { name: 'Báo chí', href: '/', description: 'Tin tức & báo chí' },
+        { name: 'Blog', href: '/', description: 'Bài viết hữu ích' },
     ];
 
     const supportLinks = [
-        { name: 'Trung tâm hỗ trợ', href: '/support', description: '24/7 hỗ trợ' },
-        { name: 'Liên hệ', href: '/contact', description: 'Liên hệ với chúng tôi' },
-        { name: 'FAQ', href: '/faq', description: 'Câu hỏi thường gặp' },
-        { name: 'Hướng dẫn', href: '/guide', description: 'Hướng dẫn sử dụng' },
+        { name: 'Trung tâm hỗ trợ', href: '/', description: '24/7 hỗ trợ' },
+        { name: 'Liên hệ', href: '/', description: 'Liên hệ với chúng tôi' },
+        { name: 'FAQ', href: '/', description: 'Câu hỏi thường gặp' },
+        { name: 'Hướng dẫn', href: '/', description: 'Hướng dẫn sử dụng' },
     ];
 
     const categoryLinks = [
@@ -30,10 +30,10 @@ export function Footer() {
     ];
 
     const legalLinks = [
-        { name: 'Điều khoản sử dụng', href: '/terms' },
-        { name: 'Chính sách bảo mật', href: '/privacy' },
-        { name: 'Chính sách cookie', href: '/cookies' },
-        { name: 'Chính sách hoàn tiền', href: '/refund' },
+        { name: 'Điều khoản sử dụng', href: '/' },
+        { name: 'Chính sách bảo mật', href: '/' },
+        { name: 'Chính sách cookie', href: '/' },
+        { name: 'Chính sách hoàn tiền', href: '/' },
     ];
 
     const socialLinks = [

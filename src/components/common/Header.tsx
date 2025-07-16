@@ -19,10 +19,10 @@ export function Header() {
     const router = useRouter();
 
     const navigation = [
-        { name: 'Khóa học', href: '/courses' },
-        { name: 'Giáo viên', href: '/instructors' },
-        { name: 'Cộng đồng', href: '/community' },
-        { name: 'Về chúng tôi', href: '/about' },
+        { name: 'Khóa học', href: '/' },
+        { name: 'Giáo viên', href: '/' },
+        { name: 'Cộng đồng', href: '/' },
+        { name: 'Về chúng tôi', href: '/' },
     ];
 
     useEffect(() => {
