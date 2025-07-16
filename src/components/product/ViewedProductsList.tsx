@@ -60,7 +60,7 @@ export function ViewedProductsList() {
     };
 
     return (
-        <div className={cn('container mx-auto px-4 py-8', history.length === 0 && 'hidden')}>
+        <div className={cn('container mx-auto px-10 py-8', history.length === 0 && 'hidden')}>
             {/* Header */}
             <h2 className='text-2xl font-bold mb-4'>Khóa học đã xem</h2>
 
