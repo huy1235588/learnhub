@@ -1,7 +1,10 @@
+'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useFavoritesContext } from '@/contexts/FavoritesContext';
 import { cn } from '@/lib/utils';
 import { Product } from '@/types/product';
 import { Clock, Heart, Star, Users } from 'lucide-react';
@@ -10,19 +13,19 @@ import Image from 'next/image';
 interface ProductCardProps {
     product: Product;
     onClick?: (product: Product) => void;
-    isFavorite?: boolean;
-    onFavoriteToggle: (productId: string) => void;
     className?: string;
 }
 
-export function ProductCard({ product, isFavorite, onClick, onFavoriteToggle, className }: ProductCardProps) {
+export function ProductCard({ product, onClick, className }: ProductCardProps) {
+    const { toggleFavorite, isFavorite } = useFavoritesContext();
+
     const handleCardClick = () => {
         onClick?.(product);
     };
 
     const handleFavoriteToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-        onFavoriteToggle(product.id);
+        toggleFavorite(product.id);
     };
 
     return (
@@ -52,10 +55,15 @@ export function ProductCard({ product, isFavorite, onClick, onFavoriteToggle, cl
                     className={cn(
                         'absolute top-3 right-3 p-2 rounded-full transition-all duration-200',
                         'bg-white/90 hover:bg-white shadow-sm hover:shadow-md hover:text-red-500',
-                        isFavorite ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
+                        isFavorite(product.id) ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
                     )}
                 >
-                    <Heart className={cn('h-4 w-4 transition-transform duration-200', isFavorite && 'fill-current scale-110')} />
+                    <Heart
+                        className={cn(
+                            'h-4 w-4 transition-transform duration-200',
+                            isFavorite(product.id) && 'fill-current scale-110'
+                        )}
+                    />
                 </Button>
 
                 {/* Discount badge */}

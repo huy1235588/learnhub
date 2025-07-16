@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { useFavoritesContext } from '@/contexts/FavoritesContext';
 import { cn } from '@/lib/utils';
 import { Product } from '@/types/product';
 import { BookOpen, Calendar, Clock, Heart, ShoppingCart, Star, Users } from 'lucide-react';
@@ -12,20 +13,20 @@ import { useState } from 'react';
 
 interface ProductModalProps {
     product: Product | null;
-    isFavorite?: boolean;
     isOpen: boolean;
     onClose: () => void;
-    onFavoriteToggle: (productId: string) => void;
 }
 
-export function ProductModal({ product, isFavorite, isOpen, onClose, onFavoriteToggle }: ProductModalProps) {
+export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
+    const { toggleFavorite, isFavorite } = useFavoritesContext();
     const [isAddingToCart, setIsAddingToCart] = useState(false);
 
     if (!product) return null;
 
     const handleFavoriteToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-        onFavoriteToggle(product.id);
+
+        toggleFavorite(product.id);
     };
 
     const handleAddToCart = async () => {
@@ -97,10 +98,10 @@ export function ProductModal({ product, isFavorite, isOpen, onClose, onFavoriteT
                                     <Heart
                                         className={cn(
                                             'h-5 w-5 mr-2 transition-transform duration-200',
-                                            isFavorite ? 'fill-current text-red-500' : 'text-gray-500'
+                                            isFavorite(product.id) ? 'fill-current text-red-500' : 'text-gray-500'
                                         )}
                                     />
-                                    {isFavorite ? 'Đã yêu thích' : 'Thêm vào yêu thích'}
+                                    {isFavorite(product.id) ? 'Đã yêu thích' : 'Thêm vào yêu thích'}
                                 </Button>
                             </div>
                         </div>

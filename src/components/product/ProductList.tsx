@@ -3,8 +3,6 @@
 import { SearchBar } from '@/components/common/SearchBar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { useFavorites } from '@/hooks/useFavorites';
-import { LocalStorageUtils } from '@/lib/localStorageUtils';
 import { cn } from '@/lib/utils';
 import { ApiResponse, ProductsApiResponse } from '@/types/api';
 import { Product } from '@/types/product';
@@ -17,16 +15,19 @@ import { ProductCardSkeleton } from './ProductCardSkeleton';
 import { ProductModal } from './ProductModal';
 
 interface ProductListProps {
-    apiUrl?: string; // Optional API URL for fetching products
+    initialProducts: Product[]; // Initial products to display
+    totalProducts: number; // Total number of products for pagination
+    isLoading?: boolean; // Optional loading state
+    error?: string; // Optional error message
+    isFavoritesPage?: boolean; // Flag to indicate if this is favorites page
 }
 
 const ITEMS_PER_PAGE = 9; // Default items per page for pagination
 const MAX_VIEWED_PRODUCTS = 8; // Maximum number of viewed products to keep
 
-export function ProductList({ apiUrl }: ProductListProps) {
+export function ProductList({ initialProducts, totalProducts, isLoading, error, isFavoritesPage = false }: ProductListProps) {
     // State for managing products and pagination
-    const [products, setProducts] = useState<Product[]>([]);
-    const { toggleFavorite, favorites } = useFavorites();
+    const [products, setProducts] = useState<Product[]>(initialProducts);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [filterValue, setFilterValue] = useState('all');
@@ -34,45 +35,17 @@ export function ProductList({ apiUrl }: ProductListProps) {
     const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [isLoading, setIsLoading] = useState(true);
     const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [totalProducts, setTotalProducts] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const userId = 'user123'; // Hardcoded userId for the mock API
-
-    // Fetch products on initial load
+    // Update products when initialProducts change (for favorites page)
     useEffect(() => {
-        const fetchInitialProducts = async () => {
-            setIsLoading(true);
-            setError(null);
-            try {
-                const response = await fetch(`${apiUrl}?limit=${ITEMS_PER_PAGE}&page=1&userId=${userId}`);
-                const result: ApiResponse<ProductsApiResponse> = await response.json();
-
-                if (result.success && result.data) {
-                    setProducts(result.data.products);
-                    setTotalProducts(result.data.pagination.totalItems);
-                } else {
-                    throw new Error(result.error || 'Không thể tải danh sách sản phẩm.');
-                }
-            } catch (err: unknown) {
-                const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
-                setError(errorMessage);
-                console.error('Failed to fetch products:', err);
-                toast.error(errorMessage);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchInitialProducts();
-    }, [apiUrl]);
+        setProducts(initialProducts);
+    }, [initialProducts]);
 
     // Load more products when the user clicks "Load More"
     const handleLoadMore = async () => {
-        if (isLoadMoreLoading) return;
+        if (isLoadMoreLoading || isFavoritesPage) return; // Disable load more on favorites page
 
         setIsLoadMoreLoading(true);
         const nextPage = currentPage + 1;
@@ -82,7 +55,7 @@ export function ProductList({ apiUrl }: ProductListProps) {
             const result: ApiResponse<ProductsApiResponse> = await response.json();
 
             if (result.success && result.data) {
-                // Nối sản phẩm mới vào danh sách hiện có
+                // Append new products to the existing list
                 setProducts((prevProducts) => [...prevProducts, ...result.data.products]);
                 setCurrentPage(nextPage);
             } else {
@@ -125,31 +98,6 @@ export function ProductList({ apiUrl }: ProductListProps) {
         return tempProducts;
     }, [products, searchQuery, filterValue]);
 
-    // Function to handle product view tracking
-    const handleFavoriteToggle = async (productId: string) => {
-        const action = toggleFavorite(productId);
-
-        // Show toast notification
-        if (action === 'added') {
-            LocalStorageUtils.addItem('favoriteProductIds', productId);
-
-            toast.success('Đã thêm vào yêu thích', {
-                position: 'top-right',
-                duration: 2000,
-                icon: '❤️',
-                richColors: true,
-            });
-        } else {
-            LocalStorageUtils.removeItem('favoriteProductIds', productId);
-
-            toast.info('Đã bỏ yêu thích', {
-                position: 'top-right',
-                duration: 2000,
-                richColors: true,
-            });
-        }
-    };
-
     // Handle product click to open modal and track view history
     const handleProductClick = (product: Product) => {
         setSelectedProductId(product.id);
@@ -179,6 +127,10 @@ export function ProductList({ apiUrl }: ProductListProps) {
         return filteredProducts.find((p) => p.id === selectedProductId) || null;
     }, [selectedProductId, filteredProducts]);
 
+    // Check if should show load more button
+    const shouldShowLoadMore =
+        !isFavoritesPage && !isLoading && !error && filteredProducts.length > 0 && products.length < totalProducts;
+
     const renderContent = () => {
         // --- 1. Loading State ---
         if (isLoading) {
@@ -204,10 +156,16 @@ export function ProductList({ apiUrl }: ProductListProps) {
 
         // --- 3. No Products Found ---
         if (filteredProducts.length === 0) {
+            const emptyMessage = isFavoritesPage ? 'Bạn chưa có khóa học yêu thích nào' : 'Không tìm thấy khóa học nào';
+
+            const emptyDescription = isFavoritesPage
+                ? 'Hãy thêm khóa học vào danh sách yêu thích để xem tại đây.'
+                : 'Vui lòng thử lại với từ khóa hoặc bộ lọc khác.';
+
             return (
                 <Card className='col-span-full flex flex-col items-center justify-center p-12 text-center'>
-                    <h3 className='text-xl font-semibold'>Không tìm thấy khóa học nào</h3>
-                    <p className='text-muted-foreground'>Vui lòng thử lại với từ khóa hoặc bộ lọc khác.</p>
+                    <h3 className='text-xl font-semibold'>{emptyMessage}</h3>
+                    <p className='text-muted-foreground'>{emptyDescription}</p>
                 </Card>
             );
         }
@@ -216,13 +174,7 @@ export function ProductList({ apiUrl }: ProductListProps) {
         return (
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
                 {filteredProducts.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                        isFavorite={favorites.includes(product.id)}
-                        onClick={handleProductClick}
-                        onFavoriteToggle={handleFavoriteToggle}
-                    />
+                    <ProductCard key={product.id} product={product} onClick={handleProductClick} />
                 ))}
             </div>
         );
@@ -236,7 +188,11 @@ export function ProductList({ apiUrl }: ProductListProps) {
                     {/* Top row - Search and view controls */}
                     <div className='flex flex-col sm:flex-row gap-4 justify-between items-center'>
                         <div className='flex-1 w-full'>
-                            <SearchBar onSearch={setSearchQuery} placeholder='Tìm kiếm khóa học...' className='h-12' />
+                            <SearchBar
+                                onSearch={setSearchQuery}
+                                placeholder={isFavoritesPage ? 'Tìm kiếm trong yêu thích...' : 'Tìm kiếm khóa học...'}
+                                className='h-12'
+                            />
                         </div>
 
                         <div className='flex items-center gap-2'>
@@ -260,8 +216,17 @@ export function ProductList({ apiUrl }: ProductListProps) {
 
                             {/* Results count */}
                             <div className='text-sm text-muted-foreground'>
-                                Tìm thấy <span className='font-semibold'>{totalProducts}</span> khóa học
-                                {searchQuery && <span> cho &ldquo;{searchQuery}&rdquo;</span>}
+                                {isFavoritesPage ? (
+                                    <>
+                                        Có <span className='font-semibold'>{filteredProducts.length}</span> khóa học yêu thích
+                                        {searchQuery && <span> cho &ldquo;{searchQuery}&rdquo;</span>}
+                                    </>
+                                ) : (
+                                    <>
+                                        Tìm thấy <span className='font-semibold'>{totalProducts}</span> khóa học
+                                        {searchQuery && <span> cho &ldquo;{searchQuery}&rdquo;</span>}
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -271,8 +236,8 @@ export function ProductList({ apiUrl }: ProductListProps) {
             {/* Product Grid */}
             {renderContent()}
 
-            {/* Load More Button */}
-            {!isLoading && !error && products.length < totalProducts && (
+            {/* Load More Button - Only show on home page */}
+            {shouldShowLoadMore && (
                 <div className='text-center mt-8'>
                     <Button onClick={handleLoadMore} disabled={isLoadMoreLoading} size='lg'>
                         {isLoadMoreLoading ? 'Đang tải...' : 'Xem thêm'}
@@ -281,13 +246,7 @@ export function ProductList({ apiUrl }: ProductListProps) {
             )}
 
             {/* Product Modal */}
-            <ProductModal
-                product={selectedProduct}
-                isFavorite={selectedProduct ? favorites.includes(selectedProduct.id) : false}
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
-                onFavoriteToggle={handleFavoriteToggle}
-            />
+            <ProductModal product={selectedProduct} isOpen={isModalOpen} onClose={handleCloseModal} />
         </div>
     );
 }

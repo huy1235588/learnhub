@@ -1037,7 +1037,7 @@ export const mockProducts: Product[] = [
         title: 'Luyện thi Cambridge C1 Advanced (CAE)',
         price: 1599000,
         originalPrice: 1999000,
-        image: 'https://plus.unsplash.com/premium_photo-1681248156472-ce2223f2fce9&w=2070&auto=format&fit=crop',
+        image: 'https://plus.unsplash.com/premium_photo-1681248156472-ce2223f2fce9?q=80&&w=2070&auto=format&fit=crop',
         description: 'Chinh phục kỳ thi C1 Advanced với chiến lược toàn diện cho 5 phần thi.',
         fullDescription:
             'Khóa học cung cấp kiến thức và kỹ năng chuyên sâu để vượt qua kỳ thi Cambridge C1 Advanced (CAE), chứng minh khả năng sử dụng tiếng Anh thành thạo trong môi trường học thuật và chuyên nghiệp.',

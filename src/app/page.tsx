@@ -1,7 +1,30 @@
 import { ProductList } from '@/components/product/ProductList';
 import { ViewedProductsList } from '@/components/product/ViewedProductsList';
+import axios from '@/lib/axios';
+import { ApiResponse, ProductsApiResponse } from '@/types/api';
+import { Product } from '@/types/product';
 
-export default function Home() {
+async function getProducts(): Promise<{ products: Product[]; totalProducts: number }> {
+    try {
+        const response = await axios(`/api/products?limit=9&page=1`);
+        const result: ApiResponse<ProductsApiResponse> = await response.data;
+
+        if (result.success && result.data) {
+            return {
+                products: result.data.products,
+                totalProducts: result.data.pagination.totalItems,
+            };
+        }
+        return { products: [], totalProducts: 0 };
+    } catch (error) {
+        console.error('Failed to fetch products:', error);
+        return { products: [], totalProducts: 0 };
+    }
+}
+
+export default async function Home() {
+    const initialProducts = await getProducts();
+
     return (
         <div className='min-h-screen bg-background'>
             {/* Header Section */}
@@ -15,7 +38,7 @@ export default function Home() {
             </div>
 
             {/* Product List Section */}
-            <ProductList apiUrl='/api/products' />
+            <ProductList initialProducts={initialProducts.products} totalProducts={initialProducts.totalProducts} />
 
             {/* Viewed Product */}
             <ViewedProductsList />
