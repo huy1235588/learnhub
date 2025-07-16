@@ -4,6 +4,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
     try {
+        // Simulate a delay for the API response
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         const { searchParams } = new URL(request.url);
 
         // Get filter parameters from the query string

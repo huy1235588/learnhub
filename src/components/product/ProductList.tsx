@@ -3,10 +3,12 @@
 import { SearchBar } from '@/components/common/SearchBar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useFavoritesContext } from '@/contexts/FavoritesContext';
+import axiosInstance from '@/lib/axios';
 import { cn } from '@/lib/utils';
 import { ApiResponse, ProductsApiResponse } from '@/types/api';
 import { Product } from '@/types/product';
-import { Filter as FilterIcon, WifiOff } from 'lucide-react';
+import { Filter as FilterIcon, Wand2, WifiOff } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { Filter } from './Filter';
@@ -38,10 +40,48 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
     const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
 
+    // State for product suggestions
+    const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
+    const [isSuggesting, setIsSuggesting] = useState(false);
+    const [viewingSuggestions, setViewingSuggestions] = useState(false);
+
+    const { favorites } = useFavoritesContext();
+
     // Update products when initialProducts change (for favorites page)
     useEffect(() => {
         setProducts(initialProducts);
     }, [initialProducts]);
+
+    // Load suggestions
+    const handleSuggestProducts = async () => {
+        setIsSuggesting(true);
+        setViewingSuggestions(false); // Reset before fetching new suggestions
+
+        try {
+            // Lấy ID sản phẩm đã xem và yêu thích từ localStorage
+            const viewedIds = JSON.parse(localStorage.getItem('viewedProductIds') || '[]');
+
+            const response = await axiosInstance(
+                `/api/suggestions?viewedProducts=${viewedIds.join(',')}&favoriteProducts=${favorites.join(',')}`
+            );
+            const result: ApiResponse<ProductsApiResponse> = await response.data;
+
+            if (result.success && result.data && result.data.products.length > 0) {
+                setSuggestedProducts(result.data.products);
+                setViewingSuggestions(true); // Set flag to indicate suggestions are being viewed
+                toast.success('Đây là những sản phẩm được gợi ý cho bạn!');
+            } else if (result.success && result.data.products.length === 0) {
+                toast.info('Không tìm thấy sản phẩm gợi ý nào phù hợp với bạn lúc này.');
+            } else {
+                throw new Error(result.error || 'Không thể tải gợi ý.');
+            }
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
+            toast.error(errorMessage);
+        } finally {
+            setIsSuggesting(false);
+        }
+    };
 
     // Load more products when the user clicks "Load More"
     const handleLoadMore = async () => {
@@ -98,6 +138,9 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
         return tempProducts;
     }, [products, searchQuery, filterValue]);
 
+    // Determine which products to display based on whether suggestions are being viewed
+    const productsToDisplay = viewingSuggestions ? suggestedProducts : filteredProducts;
+
     // Handle product click to open modal and track view history
     const handleProductClick = (product: Product) => {
         setSelectedProductId(product.id);
@@ -133,7 +176,7 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
 
     const renderContent = () => {
         // --- 1. Loading State ---
-        if (isLoading) {
+        if (isLoading || isSuggesting) {
             return (
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
                     {Array.from({ length: 6 }).map((_, index) => (
@@ -155,7 +198,7 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
         }
 
         // --- 3. No Products Found ---
-        if (filteredProducts.length === 0) {
+        if (productsToDisplay.length === 0 && !isSuggesting) {
             const emptyMessage = isFavoritesPage ? 'Bạn chưa có khóa học yêu thích nào' : 'Không tìm thấy khóa học nào';
 
             const emptyDescription = isFavoritesPage
@@ -173,7 +216,7 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
         // --- 4. Product Grid ---
         return (
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-                {filteredProducts.map((product) => (
+                {productsToDisplay.map((product) => (
                     <ProductCard key={product.id} product={product} onClick={handleProductClick} />
                 ))}
             </div>
@@ -196,6 +239,19 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
                         </div>
 
                         <div className='flex items-center gap-2'>
+                            {/* Suggest products button - only show if not on favorites page */}
+                            {!isFavoritesPage && (
+                                <Button
+                                    onClick={handleSuggestProducts}
+                                    disabled={isSuggesting}
+                                    variant='outline'
+                                    className='h-12'
+                                >
+                                    <Wand2 className='h-4 w-4 mr-2' />
+                                    {isSuggesting ? 'Đang tìm...' : 'Gợi ý cho bạn'}
+                                </Button>
+                            )}
+
                             {/* Filter toggle for mobile */}
                             <Button
                                 variant='outline'
@@ -210,15 +266,20 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
                     </div>
 
                     {/* Filter section */}
-                    <div className={cn('transition-all duration-300 overflow-hidden', showFilters || 'hidden sm:block')}>
+                    <div
+                        className={cn(
+                            'transition-all duration-300 overflow-hidden',
+                            (showFilters || 'hidden sm:block') && !viewingSuggestions
+                        )}
+                    >
                         <div className='flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between'>
                             <Filter onFilterChange={setFilterValue} />
 
-                            {/* Results count */}
+                            {/* Số lượng kết quả */}
                             <div className='text-sm text-muted-foreground'>
                                 {isFavoritesPage ? (
                                     <>
-                                        Có <span className='font-semibold'>{filteredProducts.length}</span> khóa học yêu thích
+                                        Có <span className='font-semibold'>{productsToDisplay.length}</span> khóa học yêu thích
                                         {searchQuery && <span> cho &ldquo;{searchQuery}&rdquo;</span>}
                                     </>
                                 ) : (
@@ -230,8 +291,23 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
                             </div>
                         </div>
                     </div>
+
+                    {/* Hiển thị khi đang xem gợi ý */}
+                    {viewingSuggestions && (
+                        <div className='flex justify-between items-center pt-2'>
+                            <div className='text-sm text-muted-foreground'>
+                                Hiển thị <span className='font-semibold'>{productsToDisplay.length}</span> gợi ý phù hợp cho bạn.
+                            </div>
+                            <Button variant='link' onClick={() => setViewingSuggestions(false)}>
+                                Quay lại tất cả khóa học
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </Card>
+
+            {/* Phần Gợi ý cho bạn */}
+            {/* <ProductSuggestions /> */}
 
             {/* Product Grid */}
             {renderContent()}
