@@ -1,77 +1,88 @@
+// @/app/api/products/route.ts
+
 import { mockProducts } from '@/data/mock-data';
-import { Product } from '@/types/product';
+import { ApiResponse, ProductsApiResponse } from '@/types/api';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
     try {
-        // Simulate a delay for the API response
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
         const { searchParams } = new URL(request.url);
 
-        // Get filter parameters from the query string
-        const search = searchParams.get('search')?.toLowerCase() || '';
-        const category = searchParams.get('category') || '';
-        const minPrice = searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!) : 0;
-        const maxPrice = searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!) : Infinity;
-        const instructor = searchParams.get('instructor')?.toLowerCase() || '';
-        const minRating = searchParams.get('minRating') ? parseFloat(searchParams.get('minRating')!) : 0;
-        const tags = searchParams.get('tags')?.toLowerCase().split(',').filter(Boolean) || [];
-        const sortBy = searchParams.get('sortBy') || 'title'; // title, price, rating, students, lastUpdated
-        const sortOrder = searchParams.get('sortOrder') || 'asc'; // asc, desc
+        // Extract pagination parameters
+        const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+        const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '9', 10))); // Limit max items per page
 
-        const ids = searchParams.get('ids');
-        if (ids) {
-            // If 'ids' parameter is provided, filter products by these IDs
-            const idList = ids.split(',').map((id) => id.trim());
-            const filteredProducts = mockProducts.filter((product) => idList.includes(product.id));
-            return NextResponse.json({
-                success: true,
-                data: {
-                    products: filteredProducts,
-                    total: filteredProducts.length,
-                },
+        // Extract sorting parameters
+        const sortBy = searchParams.get('sortBy') || 'rating';
+        const sortOrder = searchParams.get('sortOrder') || 'desc';
+
+        // Extract filter parameters
+        const searchQuery = searchParams.get('search')?.trim().toLowerCase() || '';
+        const category = searchParams.get('category')?.trim() || '';
+        const instructor = searchParams.get('instructor')?.trim() || '';
+        const tag = searchParams.get('tag')?.trim() || '';
+
+        // Price range parameters
+        const minPrice = searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : undefined;
+        const maxPrice = searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined;
+
+        // Rating parameter
+        const minRating = searchParams.get('minRating') ? Number(searchParams.get('minRating')) : undefined;
+
+        // Start with all products
+        let filteredProducts = [...mockProducts];
+
+        // Apply filters in order of selectivity (most selective first for performance)
+
+        // 1. Category filter (usually most selective)
+        if (category) {
+            filteredProducts = filteredProducts.filter((product) => product.category?.toLowerCase() === category.toLowerCase());
+        }
+
+        // 2. Instructor filter
+        if (instructor) {
+            filteredProducts = filteredProducts.filter(
+                (product) => product.instructor?.name?.toLowerCase() === instructor.toLowerCase()
+            );
+        }
+
+        // 3. Tag filter
+        if (tag) {
+            filteredProducts = filteredProducts.filter((product) =>
+                product.tags?.some((t) => t.toLowerCase() === tag.toLowerCase())
+            );
+        }
+
+        // 4. Price range filters
+        if (minPrice !== undefined) {
+            filteredProducts = filteredProducts.filter((product) => product.price >= minPrice);
+        }
+        if (maxPrice !== undefined) {
+            filteredProducts = filteredProducts.filter((product) => product.price <= maxPrice);
+        }
+
+        // 5. Rating filter
+        if (minRating !== undefined) {
+            filteredProducts = filteredProducts.filter((product) => product.rating >= minRating);
+        }
+
+        // 6. Search query filter (applied last as it's usually less selective)
+        if (searchQuery) {
+            filteredProducts = filteredProducts.filter((product) => {
+                const searchableFields = [
+                    product.title?.toLowerCase() || '',
+                    product.description?.toLowerCase() || '',
+                    product.instructor?.name?.toLowerCase() || '',
+                    product.category?.toLowerCase() || '',
+                    ...(product.tags?.map((tag) => tag.toLowerCase()) || []),
+                ];
+
+                return searchableFields.some((field) => field.includes(searchQuery));
             });
         }
 
-        // Pagination
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '12');
-        const offset = (page - 1) * limit;
-
-        // Filter products
-        const filteredProducts = mockProducts.filter((product: Product) => {
-            // Filter by search keyword (search in title, description, instructor, etc.)
-            const matchesSearch =
-                !search ||
-                product.title.toLowerCase().includes(search) ||
-                product.description.toLowerCase().includes(search) ||
-                product.fullDescription.toLowerCase().includes(search) ||
-                product.instructor.name.toLowerCase().includes(search) ||
-                product.tags.some((tag) => tag.toLowerCase().includes(search));
-
-            // Filter by category
-            const matchesCategory = !category || product.category.toLowerCase().includes(category.toLowerCase());
-
-            // Filter by price range
-            const matchesPrice = product.price >= minPrice && product.price <= maxPrice;
-
-            // Filter by instructor
-            const matchesInstructor = !instructor || product.instructor.name.toLowerCase().includes(instructor);
-
-            // Filter by minimum rating
-            const matchesRating = product.rating >= minRating;
-
-            // Filter by tags
-            const matchesTags =
-                tags.length === 0 ||
-                tags.some((tag) => product.tags.some((productTag) => productTag.toLowerCase().includes(tag)));
-
-            return matchesSearch && matchesCategory && matchesPrice && matchesInstructor && matchesRating && matchesTags;
-        });
-
-        // Sort products
-        filteredProducts.sort((a: Product, b: Product) => {
+        // Apply sorting
+        filteredProducts.sort((a, b) => {
             let comparison = 0;
 
             switch (sortBy) {
@@ -81,31 +92,27 @@ export async function GET(request: NextRequest) {
                 case 'rating':
                     comparison = a.rating - b.rating;
                     break;
-                case 'students':
-                    comparison = a.students - b.students;
-                    break;
-                case 'lastUpdated':
-                    comparison = new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime();
-                    break;
                 case 'title':
-                default:
-                    comparison = parseInt(a.id, 10) - parseInt(b.id, 10);
+                    comparison = a.title.localeCompare(b.title);
                     break;
+                default:
+                    comparison = a.rating - b.rating; // Default to rating
             }
 
-            return sortOrder === 'desc' ? -comparison : comparison;
+            return sortOrder === 'asc' ? comparison : -comparison;
         });
 
-        // Calculate pagination information
+        // Calculate pagination
         const totalItems = filteredProducts.length;
         const totalPages = Math.ceil(totalItems / limit);
-        const hasMore = page < totalPages;
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
 
         // Apply pagination
-        const paginatedProducts = filteredProducts.slice(offset, offset + limit);
+        const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
-        // Return the result
-        return NextResponse.json({
+        // Prepare response
+        const response: ApiResponse<ProductsApiResponse> = {
             success: true,
             data: {
                 products: paginatedProducts,
@@ -114,27 +121,70 @@ export async function GET(request: NextRequest) {
                     totalPages,
                     totalItems,
                     itemsPerPage: limit,
-                    hasMore,
+                    hasNextPage: page < totalPages,
+                    hasPreviousPage: page > 1,
                 },
                 filters: {
-                    search,
-                    category,
+                    search: searchQuery || undefined,
+                    category: category || undefined,
+                    instructor: instructor || undefined,
+                    tags: tag ? [tag] : [],
                     minPrice,
-                    maxPrice: maxPrice === Infinity ? null : maxPrice,
-                    instructor,
+                    maxPrice,
                     minRating,
-                    tags,
                     sortBy,
-                    sortOrder,
+                    sortOrder: sortOrder as 'asc' | 'desc',
                 },
+                total: totalItems,
             },
-        });
+        };
+
+        return NextResponse.json(response);
     } catch (error) {
         console.error('API Error:', error);
         return NextResponse.json(
             {
                 success: false,
-                error: 'An error occurred while fetching the product list',
+                error: 'Có lỗi xảy ra khi lấy danh sách sản phẩm',
+            },
+            { status: 500 }
+        );
+    }
+}
+
+// Optional: Add POST method for advanced filtering
+export async function POST(request: NextRequest) {
+    try {
+        const body = await request.json();
+        const { page = 1, limit = 9, sortBy = 'rating', sortOrder = 'desc', filters = {} } = body;
+
+        // Use the same filtering logic as GET but with more complex filter object
+        const searchParams = new URLSearchParams();
+
+        // Convert filters to search params format
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== '') {
+                searchParams.set(key, String(value));
+            }
+        });
+
+        // Set pagination and sorting
+        searchParams.set('page', String(page));
+        searchParams.set('limit', String(limit));
+        searchParams.set('sortBy', sortBy);
+        searchParams.set('sortOrder', sortOrder);
+
+        // Create a new request with the converted parameters
+        const newRequest = new NextRequest(`${request.url}?${searchParams.toString()}`, { method: 'GET' });
+
+        // Reuse the GET logic
+        return GET(newRequest);
+    } catch (error) {
+        console.error('API Error:', error);
+        return NextResponse.json(
+            {
+                success: false,
+                error: 'Có lỗi xảy ra khi lấy thông tin bộ lọc',
             },
             { status: 500 }
         );

@@ -3,7 +3,7 @@ import { useFavoritesContext } from '@/contexts/FavoritesContext';
 import axiosInstance from '@/lib/axios';
 import { ApiResponse, ProductsApiResponse } from '@/types/api';
 import { Product } from '@/types/product';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 const ITEMS_PER_PAGE = 9;
@@ -13,8 +13,14 @@ const userId = 'user123';
 export function useProducts(initialProducts: Product[], totalProducts: number, isFavoritesPage = false) {
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [searchQuery, setSearchQuery] = useState('');
-    const [filterValue, setFilterValue] = useState<FilterValues>();
+    const [filterValue, setFilterValue] = useState<FilterValues>({
+        price: 'all',
+        category: 'all',
+        rating: 'all',
+    });
     const [currentPage, setCurrentPage] = useState(1);
+    const [totalItems, setTotalItems] = useState(totalProducts);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
     const [isSuggesting, setIsSuggesting] = useState(false);
@@ -24,22 +30,108 @@ export function useProducts(initialProducts: Product[], totalProducts: number, i
 
     const { favorites } = useFavoritesContext();
 
-    // Update products when initialProducts or isFavoritesPage changes
-    useEffect(() => {
-        setProducts(initialProducts);
-    }, [initialProducts]);
+    // Fetch products from API with filters
+    const fetchProducts = useCallback(
+        async (page: number = 1, search: string = '', filters: FilterValues, isLoadMore: boolean = false) => {
+            if (isFavoritesPage) return; // Skip API call for favorites page
 
-    // Get products to display based on suggestions or filtered products
+            const loadingState = isLoadMore ? setIsLoadMoreLoading : setIsLoading;
+            loadingState(true);
+
+            try {
+                const params: Record<string, string | number | boolean | undefined> = {
+                    page,
+                    limit: ITEMS_PER_PAGE,
+                    userId,
+                };
+
+                // Add search query
+                if (search.trim()) {
+                    params.search = search.trim();
+                }
+
+                // Add filters
+                if (filters.category && filters.category !== 'all') {
+                    params.category = filters.category;
+                }
+
+                if (filters.price && filters.price !== 'all') {
+                    // Convert price range to min/max
+                    if (filters.price === '<500000') {
+                        params.maxPrice = 499999;
+                    } else if (filters.price === '500000-1000000') {
+                        params.minPrice = 500000;
+                        params.maxPrice = 1000000;
+                    } else if (filters.price === '>1000000') {
+                        params.minPrice = 1000001;
+                    }
+                }
+
+                if (filters.rating && filters.rating !== 'all') {
+                    params.minRating = Number(filters.rating);
+                }
+
+                const response = await axiosInstance.get('/api/products', { params });
+                const result: ApiResponse<ProductsApiResponse> = response.data;
+
+                if (result.success && result.data) {
+                    if (isLoadMore) {
+                        setProducts((prev) => [...prev, ...result.data.products]);
+                    } else {
+                        setProducts(result.data.products);
+                    }
+                    setTotalItems(result.data.total);
+                    setCurrentPage(page);
+                } else {
+                    throw new Error(result.error || 'Không thể tải sản phẩm.');
+                }
+            } catch (err) {
+                const errorMessage = err instanceof Error ? err.message : 'Lỗi không xác định.';
+                toast.error(errorMessage);
+            } finally {
+                loadingState(false);
+            }
+        },
+        [isFavoritesPage, userId]
+    );
+
+    // Handle search query change
+    const handleSearchChange = useCallback(
+        (query: string) => {
+            setSearchQuery(query);
+            setCurrentPage(1);
+            setViewingSuggestions(false);
+            fetchProducts(1, query, filterValue);
+        },
+        [filterValue, fetchProducts]
+    );
+
+    // Handle filter change
+    const handleFilterChange = useCallback(
+        (filters: FilterValues) => {
+            setFilterValue(filters);
+            setCurrentPage(1);
+            setViewingSuggestions(false);
+            fetchProducts(1, searchQuery, filters);
+        },
+        [searchQuery, fetchProducts]
+    );
+
+    // Handle suggest products
     const handleSuggestProducts = async () => {
         setIsSuggesting(true);
         setViewingSuggestions(false);
 
         try {
             const viewedIds = JSON.parse(localStorage.getItem('viewedProductIds') || '[]');
-            const response = await axiosInstance(
-                `/api/suggestions?userId=${userId}&viewedProducts=${viewedIds.join(',')}&favoriteProducts=${favorites.join(',')}`
-            );
-            const result: ApiResponse<ProductsApiResponse> = await response.data;
+            const response = await axiosInstance.get('/api/suggestions', {
+                params: {
+                    userId,
+                    viewedProducts: viewedIds.join(','),
+                    favoriteProducts: favorites.join(','),
+                },
+            });
+            const result: ApiResponse<ProductsApiResponse> = response.data;
 
             if (result.success && result.data && result.data.products.length > 0) {
                 setSuggestedProducts(result.data.products);
@@ -61,106 +153,107 @@ export function useProducts(initialProducts: Product[], totalProducts: number, i
         }
     };
 
-    // Load more products when the user scrolls down
-    const handleLoadMore = async () => {
-        if (isLoadMoreLoading || isFavoritesPage) return;
-        setIsLoadMoreLoading(true);
+    // Handle load more
+    const handleLoadMore = useCallback(() => {
+        if (isLoadMoreLoading || viewingSuggestions) return;
+
         const nextPage = currentPage + 1;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-        try {
-            const response = await axiosInstance(`/api/products?limit=${ITEMS_PER_PAGE}&page=${nextPage}`);
-            const result: ApiResponse<ProductsApiResponse> = await response.data;
-
-            if (result.success && result.data) {
-                setProducts((prev) => [...prev, ...result.data.products]);
-                setCurrentPage(nextPage);
-            } else {
-                throw new Error(result.error || 'Không thể tải thêm sản phẩm.');
-            }
-        } catch (err) {
-            toast.error(err instanceof Error ? err.message : 'Lỗi không xác định.');
-        } finally {
-            setIsLoadMoreLoading(false);
+        if (nextPage <= totalPages) {
+            fetchProducts(nextPage, searchQuery, filterValue, true);
         }
-    };
+    }, [isLoadMoreLoading, viewingSuggestions, currentPage, totalItems, searchQuery, filterValue, fetchProducts]);
 
-    // Filter products based on search query and filter value
-    const filteredProducts = useMemo(() => {
-        let tempProducts = products;
-
-        // 1. Filter theo từ khóa tìm kiếm
-        if (searchQuery) {
-            tempProducts = tempProducts.filter((p) => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
-        }
-
-        // 2. Filter theo các giá trị trong bộ lọc (nếu có)
-        if (filterValue) {
-            tempProducts = tempProducts.filter((p) => {
-                const { price, category, rating } = filterValue;
-
-                // --- Kiểm tra điều kiện Price ---
-                let priceMatch = true; // Mặc định là khớp
-                if (price && price !== 'all') {
-                    // Chỉ filter khi có giá trị và không phải là 'all'
-                    const productPrice = p.price;
-                    if (price === '<500000') {
-                        priceMatch = productPrice < 500000;
-                    } else if (price === '500000-1000000') {
-                        priceMatch = productPrice >= 500000 && productPrice <= 1000000;
-                    } else if (price === '>1000000') {
-                        priceMatch = productPrice > 1000000;
-                    }
-                }
-
-                // --- Kiểm tra điều kiện Category ---
-                let categoryMatch = true;
-                // Giả sử product có thuộc tính `p.category`
-                if (category && category !== 'all') {
-                    categoryMatch = p.category?.toLowerCase() === category.toLowerCase();
-                }
-
-                // --- Kiểm tra điều kiện Rating ---
-                let ratingMatch = true;
-                // Giả sử product có thuộc tính `p.rating` là một con số
-                // và filter rating có giá trị là '3', '4', '5' (nghĩa là từ X sao trở lên)
-                if (rating && rating !== 'all') {
-                    ratingMatch = p.rating >= Number(rating);
-                }
-
-                // Sản phẩm được giữ lại nếu khớp TẤT CẢ các điều kiện
-                return priceMatch && categoryMatch && ratingMatch;
-            });
-        }
-
-        return tempProducts;
-    }, [products, searchQuery, filterValue]);
-
-    // Paginate products for display
-    const productsToDisplay = viewingSuggestions ? suggestedProducts : filteredProducts;
-
-    // Calculate total filtered products
-    const trackViewedProduct = (product: Product) => {
+    // Track viewed product
+    const trackViewedProduct = useCallback((product: Product) => {
         const stored = localStorage.getItem('viewedProductIds');
         const viewedProductIds = stored ? JSON.parse(stored) : [];
         const filteredViewedIds = viewedProductIds.filter((id: string) => id !== product.id);
         const updatedViewedIds = [product.id, ...filteredViewedIds].slice(0, MAX_VIEWED_PRODUCTS);
         localStorage.setItem('viewedProductIds', JSON.stringify(updatedViewedIds));
-    };
+    }, []);
+
+    // Reset suggestions view
+    const resetSuggestions = useCallback(() => {
+        setViewingSuggestions(false);
+        // Reload current filtered products
+        fetchProducts(1, searchQuery, filterValue);
+    }, [searchQuery, filterValue, fetchProducts]);
+
+    // Initialize with initial products for favorites page
+    useEffect(() => {
+        if (isFavoritesPage) {
+            setProducts(initialProducts);
+            setTotalItems(initialProducts.length);
+        }
+    }, [initialProducts, isFavoritesPage]);
+
+    // For favorites page, we still need client-side filtering
+    const getFilteredFavorites = useCallback(() => {
+        if (!isFavoritesPage) return products;
+
+        let filtered = products;
+
+        // Apply search filter
+        if (searchQuery) {
+            filtered = filtered.filter((p) => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
+        }
+
+        // Apply other filters
+        if (filterValue) {
+            filtered = filtered.filter((p) => {
+                const { price, category, rating } = filterValue;
+
+                // Price filter
+                if (price && price !== 'all') {
+                    const productPrice = p.price;
+                    if (price === '<500000' && productPrice >= 500000) return false;
+                    if (price === '500000-1000000' && (productPrice < 500000 || productPrice > 1000000)) return false;
+                    if (price === '>1000000' && productPrice <= 1000000) return false;
+                }
+
+                // Category filter
+                if (category && category !== 'all' && p.category?.toLowerCase() !== category.toLowerCase()) {
+                    return false;
+                }
+
+                // Rating filter
+                if (rating && rating !== 'all' && p.rating < Number(rating)) {
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
+        return filtered;
+    }, [products, searchQuery, filterValue, isFavoritesPage]);
+
+    // Get products to display
+    const productsToDisplay = viewingSuggestions ? suggestedProducts : isFavoritesPage ? getFilteredFavorites() : products;
+
+    // Check if can load more
+    const canLoadMore = !isFavoritesPage && !viewingSuggestions && currentPage * ITEMS_PER_PAGE < totalItems;
 
     return {
         // States
-        productsToDisplay,
-        totalProducts,
+        products: productsToDisplay,
+        totalProducts: isFavoritesPage ? getFilteredFavorites().length : totalItems,
         searchQuery,
+        filterValue,
+        currentPage,
+        isLoading,
         isSuggesting,
         viewingSuggestions,
         isLoadMoreLoading,
+        canLoadMore,
 
         // Handlers
-        setSearchQuery,
-        setFilterValue,
+        setSearchQuery: handleSearchChange,
+        setFilterValue: handleFilterChange,
         handleSuggestProducts,
-        setViewingSuggestions,
+        setViewingSuggestions: resetSuggestions,
         handleLoadMore,
         trackViewedProduct,
     };

@@ -43,4 +43,6 @@ export interface PaginationInfo {
     totalPages: number;
     totalItems: number;
     itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
 }

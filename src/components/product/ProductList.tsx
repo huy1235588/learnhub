@@ -18,7 +18,7 @@ interface ProductListProps {
 
 export function ProductList({ initialProducts, totalProducts, isLoading, error, isFavoritesPage = false }: ProductListProps) {
     const {
-        productsToDisplay,
+        products,
         totalProducts: totalFilteredProducts,
         searchQuery,
         isSuggesting,
@@ -30,6 +30,7 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
         setViewingSuggestions,
         handleLoadMore,
         trackViewedProduct,
+        canLoadMore,
     } = useProducts(initialProducts, totalProducts, isFavoritesPage);
     const { openModal } = useProductModal();
 
@@ -39,14 +40,6 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
 
         trackViewedProduct(product); // Track product view
     };
-
-    const shouldShowLoadMore =
-        !isFavoritesPage &&
-        !isLoading &&
-        !error &&
-        !viewingSuggestions &&
-        productsToDisplay.length > 0 &&
-        productsToDisplay.length < totalProducts;
 
     return (
         <div className='container mx-auto p-8 pt-0 space-y-8'>
@@ -60,19 +53,19 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
                     onSearch={setSearchQuery}
                     onFilterChange={setFilterValue}
                     onSuggest={handleSuggestProducts}
-                    onReturnToAll={() => setViewingSuggestions(false)}
+                    onReturnToAll={() => setViewingSuggestions()}
                 />
             </Card>
 
             <ProductGrid
-                products={productsToDisplay}
+                products={products}
                 isLoading={isLoading || isSuggesting}
                 error={error}
                 isFavoritesPage={isFavoritesPage}
                 onProductClick={handleProductClick}
             />
 
-            {shouldShowLoadMore && (
+            {canLoadMore && (
                 <div className='text-center mt-8'>
                     <Button onClick={handleLoadMore} disabled={isLoadMoreLoading} size='lg'>
                         {isLoadMoreLoading ? 'Đang tải...' : 'Xem thêm'}
