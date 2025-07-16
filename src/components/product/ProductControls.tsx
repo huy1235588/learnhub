@@ -1,9 +1,9 @@
 import { SearchBar } from '@/components/common/SearchBar';
+import { Filter, FilterValues } from '@/components/product/Filter';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Filter as FilterIcon, Wand2 } from 'lucide-react';
 import { useState } from 'react';
-import { Filter } from './Filter';
 
 interface ProductControlsProps {
     totalProducts: number;
@@ -12,7 +12,7 @@ interface ProductControlsProps {
     viewingSuggestions: boolean;
     isFavoritesPage: boolean;
     onSearch: (query: string) => void;
-    onFilterChange: (value: string) => void;
+    onFilterChange: (value: FilterValues) => void;
     onSuggest: () => void;
     onReturnToAll: () => void;
 }

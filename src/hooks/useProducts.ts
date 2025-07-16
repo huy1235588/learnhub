@@ -1,3 +1,4 @@
+import { FilterValues } from '@/components/product/Filter';
 import { useFavoritesContext } from '@/contexts/FavoritesContext';
 import axiosInstance from '@/lib/axios';
 import { ApiResponse, ProductsApiResponse } from '@/types/api';
@@ -12,7 +13,7 @@ const userId = 'user123';
 export function useProducts(initialProducts: Product[], totalProducts: number, isFavoritesPage = false) {
     const [products, setProducts] = useState<Product[]>(initialProducts);
     const [searchQuery, setSearchQuery] = useState('');
-    const [filterValue, setFilterValue] = useState('all');
+    const [filterValue, setFilterValue] = useState<FilterValues>();
     const [currentPage, setCurrentPage] = useState(1);
 
     const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
@@ -88,18 +89,51 @@ export function useProducts(initialProducts: Product[], totalProducts: number, i
     // Filter products based on search query and filter value
     const filteredProducts = useMemo(() => {
         let tempProducts = products;
+
+        // 1. Filter theo từ khóa tìm kiếm
         if (searchQuery) {
             tempProducts = tempProducts.filter((p) => p.title.toLowerCase().includes(searchQuery.toLowerCase()));
         }
-        if (filterValue !== 'all') {
+
+        // 2. Filter theo các giá trị trong bộ lọc (nếu có)
+        if (filterValue) {
             tempProducts = tempProducts.filter((p) => {
-                const price = p.price;
-                if (filterValue === '<500000') return price < 500000;
-                if (filterValue === '500000-1000000') return price >= 500000 && price <= 1000000;
-                if (filterValue === '>1000000') return price > 1000000;
-                return true;
+                const { price, category, rating } = filterValue;
+
+                // --- Kiểm tra điều kiện Price ---
+                let priceMatch = true; // Mặc định là khớp
+                if (price && price !== 'all') {
+                    // Chỉ filter khi có giá trị và không phải là 'all'
+                    const productPrice = p.price;
+                    if (price === '<500000') {
+                        priceMatch = productPrice < 500000;
+                    } else if (price === '500000-1000000') {
+                        priceMatch = productPrice >= 500000 && productPrice <= 1000000;
+                    } else if (price === '>1000000') {
+                        priceMatch = productPrice > 1000000;
+                    }
+                }
+
+                // --- Kiểm tra điều kiện Category ---
+                let categoryMatch = true;
+                // Giả sử product có thuộc tính `p.category`
+                if (category && category !== 'all') {
+                    categoryMatch = p.category?.toLowerCase() === category.toLowerCase();
+                }
+
+                // --- Kiểm tra điều kiện Rating ---
+                let ratingMatch = true;
+                // Giả sử product có thuộc tính `p.rating` là một con số
+                // và filter rating có giá trị là '3', '4', '5' (nghĩa là từ X sao trở lên)
+                if (rating && rating !== 'all') {
+                    ratingMatch = p.rating >= Number(rating);
+                }
+
+                // Sản phẩm được giữ lại nếu khớp TẤT CẢ các điều kiện
+                return priceMatch && categoryMatch && ratingMatch;
             });
         }
+
         return tempProducts;
     }, [products, searchQuery, filterValue]);
 
