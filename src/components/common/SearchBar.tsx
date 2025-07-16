@@ -33,7 +33,7 @@ export function SearchBar({ onSearch, placeholder = 'Tìm kiếm khoá học...'
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className={cn('flex-1', className)}
+                className={cn('flex-1 border-slate-600', className)}
             />
             <Button type='button' onClick={handleSearch}>
                 <SearchIcon className='h-4 w-4' />

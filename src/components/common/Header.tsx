@@ -34,10 +34,8 @@ export function Header() {
     return (
         <header
             className={cn(
-                'sticky top-0 z-50 w-full transition-all duration-300',
-                isScrolled
-                    ? 'bg-background/95 backdrop-blur-md border-b shadow-sm'
-                    : 'bg-background/80 backdrop-blur-sm border-b border-transparent'
+                'fixed top-0 z-50 w-full transition-all duration-300',
+                isScrolled ? 'bg-white/90 backdrop-blur-sm shadow-md text-gray-800' : 'bg-transparent text-white'
             )}
         >
             <div className='container mx-auto px-4'>
@@ -61,7 +59,12 @@ export function Header() {
                             <div key={item.name} className='relative'>
                                 <Link
                                     href={item.href}
-                                    className='flex items-center space-x-1 px-4 py-2 text-gray-600 hover:text-emerald-600 font-medium transition-all duration-200 rounded-lg hover:bg-emerald-50 group'
+                                    className={cn(
+                                        'flex items-center space-x-1 px-4 py-2 font-medium transition-all duration-200 rounded-lg group',
+                                        isScrolled
+                                            ? 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-100'
+                                            : 'text-white hover:text-white/80 hover:bg-white/20'
+                                    )}
                                 >
                                     <span>{item.name}</span>
                                 </Link>

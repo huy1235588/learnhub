@@ -45,7 +45,10 @@ export function useProducts(initialProducts: Product[], totalProducts: number, i
             if (result.success && result.data && result.data.products.length > 0) {
                 setSuggestedProducts(result.data.products);
                 setViewingSuggestions(true);
-                toast.success('Đã tải gợi ý sản phẩm thành công!');
+                toast.success('Đã tải gợi ý sản phẩm thành công!', {
+                    position: 'top-right',
+                    richColors: true,
+                });
             } else if (result.success) {
                 toast.info('Không tìm thấy sản phẩm gợi ý nào phù hợp.');
             } else {

@@ -56,7 +56,7 @@ export function Footer() {
             <div className='absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent'></div>
 
             {/* Main Footer Content */}
-            <div className='relative container mx-auto px-8 py-16'>
+            <div className='relative container mx-auto px-8 py-12'>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12'>
                     {/* Brand & Contact */}
                     <div className='lg:col-span-2'>
