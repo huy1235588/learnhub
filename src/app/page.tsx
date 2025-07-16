@@ -1,32 +1,9 @@
 import HeroSection from '@/components/features/HeroSection';
+import ProductSection from '@/components/features/ProductSection';
 import { PromoBanner } from '@/components/features/PromoBanner';
-import { ProductList } from '@/components/product/ProductList';
 import { ViewedProductsList } from '@/components/product/ViewedProductsList';
-import axios from '@/lib/axios';
-import { ApiResponse, ProductsApiResponse } from '@/types/api';
-import { Product } from '@/types/product';
 
-async function getProducts(): Promise<{ products: Product[]; totalProducts: number }> {
-    try {
-        const response = await axios(`/api/products?limit=9&page=1`);
-        const result: ApiResponse<ProductsApiResponse> = await response.data;
-
-        if (result.success && result.data) {
-            return {
-                products: result.data.products,
-                totalProducts: result.data.pagination.totalItems,
-            };
-        }
-        return { products: [], totalProducts: 0 };
-    } catch (error) {
-        console.error('Failed to fetch products:', error);
-        return { products: [], totalProducts: 0 };
-    }
-}
-
-export default async function Home() {
-    const initialProducts = await getProducts();
-
+export default function Home() {
     return (
         <div className='min-h-screen bg-background'>
             {/* Hero Section */}
@@ -45,7 +22,7 @@ export default async function Home() {
             </div>
 
             {/* Product List Section */}
-            <ProductList initialProducts={initialProducts.products} totalProducts={initialProducts.totalProducts} />
+            <ProductSection />
 
             {/* Viewed Product */}
             <ViewedProductsList />

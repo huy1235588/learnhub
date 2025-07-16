@@ -23,28 +23,26 @@ interface CartProviderProps {
 }
 
 export function CartProvider({ children }: CartProviderProps) {
-    const [cartItems, setCartItems] = useState<string[]>(() => {
-        // Only run on client side
-        if (typeof window === 'undefined') {
-            return [];
-        }
-        try {
-            const storedItems = window.localStorage.getItem(CART_PRODUCT_IDS);
-            return storedItems ? JSON.parse(storedItems) : [];
-        } catch (error) {
-            // Error handling: If localStorage is not available or data is corrupted
-            console.error('Không thể đọc dữ liệu giỏ hàng từ localStorage', error);
-            return [];
-        }
-    });
+    const [cartItems, setCartItems] = useState<string[]>([]);
 
     const [isAddingToCart, setIsAddingToCart] = useState<boolean>(false);
 
     useEffect(() => {
         try {
-            window.localStorage.setItem(CART_PRODUCT_IDS, JSON.stringify(cartItems));
+            const storedItems = window.localStorage.getItem(CART_PRODUCT_IDS);
+            if (storedItems) {
+                setCartItems(JSON.parse(storedItems));
+            }
         } catch (error) {
             // Thông báo: Không thể lưu dữ liệu giỏ hàng vào localStorage
+            console.error('Không thể lưu dữ liệu giỏ hàng vào localStorage', error);
+        }
+    }, []);
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(CART_PRODUCT_IDS, JSON.stringify(cartItems));
+        } catch (error) {
             console.error('Không thể lưu dữ liệu giỏ hàng vào localStorage', error);
         }
     }, [cartItems]);

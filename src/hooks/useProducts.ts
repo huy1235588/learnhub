@@ -26,10 +26,8 @@ export function useProducts(initialProducts: Product[], totalProducts: number, i
 
     // Update products when initialProducts or isFavoritesPage changes
     useEffect(() => {
-        if (isFavoritesPage) {
-            setProducts(initialProducts);
-        }
-    }, [initialProducts, isFavoritesPage]);
+        setProducts(initialProducts);
+    }, [initialProducts]);
 
     // Get products to display based on suggestions or filtered products
     const handleSuggestProducts = async () => {
@@ -70,8 +68,8 @@ export function useProducts(initialProducts: Product[], totalProducts: number, i
         const nextPage = currentPage + 1;
 
         try {
-            const response = await fetch(`/api/products?limit=${ITEMS_PER_PAGE}&page=${nextPage}`);
-            const result: ApiResponse<ProductsApiResponse> = await response.json();
+            const response = await axiosInstance(`/api/products?limit=${ITEMS_PER_PAGE}&page=${nextPage}`);
+            const result: ApiResponse<ProductsApiResponse> = await response.data;
 
             if (result.success && result.data) {
                 setProducts((prev) => [...prev, ...result.data.products]);

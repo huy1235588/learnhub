@@ -21,12 +21,12 @@ export function Footer() {
     ];
 
     const categoryLinks = [
-        { name: 'Lập trình', href: '/categories/programming', count: '150+' },
-        { name: 'Thiết kế', href: '/categories/design', count: '80+' },
-        { name: 'Kinh doanh', href: '/categories/business', count: '60+' },
-        { name: 'Ngôn ngữ', href: '/categories/language', count: '40+' },
-        { name: 'Marketing', href: '/categories/marketing', count: '50+' },
-        { name: 'Nhiếp ảnh', href: '/categories/photography', count: '30+' },
+        { name: 'Lập trình', href: '/', count: '150+' },
+        { name: 'Thiết kế', href: '/', count: '80+' },
+        { name: 'Kinh doanh', href: '/', count: '60+' },
+        { name: 'Ngôn ngữ', href: '/', count: '40+' },
+        { name: 'Marketing', href: '/', count: '50+' },
+        { name: 'Nhiếp ảnh', href: '/', count: '30+' },
     ];
 
     const legalLinks = [

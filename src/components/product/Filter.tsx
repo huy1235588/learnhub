@@ -2,6 +2,7 @@
 
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import axiosInstance from '@/lib/axios';
 import { Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -39,8 +40,8 @@ export function Filter({ onFilterChange }: FilterProps) {
         const fetchFilterData = async () => {
             try {
                 // Giả sử API route của bạn là '/api/filters' dựa trên cấu trúc file
-                const response = await fetch('/api/filters');
-                const result = await response.json();
+                const response = await axiosInstance('/api/filters');
+                const result = await response.data;
                 if (result.success) {
                     setApiData(result.data);
                 }

@@ -7,13 +7,15 @@ const VIEW_HISTORY_KEY = 'viewedProductIds';
 const MAX_HISTORY_SIZE = 6;
 
 export const useViewHistory = () => {
-    const [history, setHistory] = useState<string[]>(() => {
+    const [history, setHistory] = useState<string[]>([]);
+
+    useEffect(() => {
         // Lazy initialize state from localStorage to avoid reading on every render.
         if (typeof window !== 'undefined') {
-            return LocalStorageUtils.getArray<string>(VIEW_HISTORY_KEY, []);
+            const storedHistory = LocalStorageUtils.getArray<string>(VIEW_HISTORY_KEY, []);
+            setHistory(storedHistory);
         }
-        return [];
-    });
+    }, []);
 
     // Use a Set for performant lookups (O(1) average time complexity).
     const historySet = useMemo(() => new Set(history), [history]);
