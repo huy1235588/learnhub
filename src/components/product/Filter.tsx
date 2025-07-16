@@ -6,40 +6,37 @@ import axiosInstance from '@/lib/axios';
 import { Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-// Định nghĩa kiểu dữ liệu cho các giá trị lọc sẽ được gửi lên component cha
+// Define the structure of filter values
 export interface FilterValues {
     price: string;
     category: string;
     rating: string;
 }
 
-// Định nghĩa kiểu dữ liệu cho props của component Filter
+// Define props for the Filter component
 interface FilterProps {
     onFilterChange: (filters: FilterValues) => void;
 }
 
-// Định nghĩa kiểu dữ liệu cho dữ liệu lấy về từ API
+// Define the structure of API response for filter data
 interface ApiFilterData {
     categories: string[];
     tags: string[];
 }
 
 export function Filter({ onFilterChange }: FilterProps) {
-    // State để lưu trữ dữ liệu lọc từ API
     const [apiData, setApiData] = useState<ApiFilterData | null>(null);
-    // State để quản lý trạng thái loading
     const [isLoading, setIsLoading] = useState(true);
 
-    // State cho từng giá trị bộ lọc được chọn
+    // State for filter values
     const [price, setPrice] = useState('all');
     const [category, setCategory] = useState('all');
     const [rating, setRating] = useState('all');
 
-    // Lấy dữ liệu cho các bộ lọc khi component được mount
+    // Fetch filter data from API
     useEffect(() => {
         const fetchFilterData = async () => {
             try {
-                // Giả sử API route của bạn là '/api/filters' dựa trên cấu trúc file
                 const response = await axiosInstance('/api/filters');
                 const result = await response.data;
                 if (result.success) {
@@ -55,7 +52,7 @@ export function Filter({ onFilterChange }: FilterProps) {
         fetchFilterData();
     }, []);
 
-    // Gửi các giá trị lọc mới nhất lên component cha mỗi khi có sự thay đổi
+    // Update filter values when any of them changes
     useEffect(() => {
         onFilterChange({
             price,
@@ -70,7 +67,7 @@ export function Filter({ onFilterChange }: FilterProps) {
 
     return (
         <div className='flex flex-wrap items-center gap-4 p-4 bg-secondary rounded-lg'>
-            {/* Bộ lọc theo giá */}
+            {/* Filter by price */}
             <div className='flex items-center gap-2'>
                 <Label htmlFor='price-filter' className='font-semibold'>
                     Lọc theo giá
@@ -88,7 +85,7 @@ export function Filter({ onFilterChange }: FilterProps) {
                 </Select>
             </div>
 
-            {/* Bộ lọc theo danh mục */}
+            {/* Filter by category */}
             <div className='flex items-center gap-2'>
                 <Label htmlFor='category-filter' className='font-semibold'>
                     Danh mục
@@ -108,7 +105,7 @@ export function Filter({ onFilterChange }: FilterProps) {
                 </Select>
             </div>
 
-            {/*  Bộ lọc đánh giá (Rating) */}
+            {/* Filter by rating */}
             <div className='flex items-center gap-2'>
                 <Label htmlFor='rating-filter'>Lọc theo đánh giá</Label>
                 <Select onValueChange={setRating} defaultValue='all'>

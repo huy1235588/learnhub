@@ -34,7 +34,6 @@ export function CartProvider({ children }: CartProviderProps) {
                 setCartItems(JSON.parse(storedItems));
             }
         } catch (error) {
-            // Thông báo: Không thể lưu dữ liệu giỏ hàng vào localStorage
             console.error('Không thể lưu dữ liệu giỏ hàng vào localStorage', error);
         }
     }, []);

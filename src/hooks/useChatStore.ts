@@ -1,4 +1,3 @@
-// hooks/use-chat-store.ts
 import { getBotResponse } from '@/data/mock-ai';
 import { Product } from '@/types/product';
 import { create } from 'zustand';

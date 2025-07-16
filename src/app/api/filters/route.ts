@@ -3,31 +3,31 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
     try {
-        // Lấy tất cả danh mục duy nhất
+        // Get all unique categories from products
         const categories = [...new Set(mockProducts.map((product) => product.category))];
 
-        // Lấy tất cả tags duy nhất
+        // Get all unique tags from products
         const allTags = mockProducts.flatMap((product) => product.tags);
         const tags = [...new Set(allTags)];
 
-        // Lấy tất cả giảng viên duy nhất
+        // Get all unique instructors from products
         const instructors = [...new Set(mockProducts.map((product) => product.instructor.name))];
 
-        // Tính khoảng giá
+        // Calculate price range
         const prices = mockProducts.map((product) => product.price);
         const priceRange = {
             min: Math.min(...prices),
             max: Math.max(...prices),
         };
 
-        // Tính khoảng đánh giá
+        // Calculate rating range
         const ratings = mockProducts.map((product) => product.rating);
         const ratingRange = {
             min: Math.min(...ratings),
             max: Math.max(...ratings),
         };
 
-        // Thống kê tổng quan
+        // Calculate statistics
         const stats = {
             totalProducts: mockProducts.length,
             totalInstructors: instructors.length,

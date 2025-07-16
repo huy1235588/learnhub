@@ -8,15 +8,13 @@ import { Product } from '@/types/product';
 import { useEffect, useState } from 'react';
 
 export default function FavoritesPage() {
-    // 1. Get the list of favorite product IDs from the hook
     const { favorites } = useFavoritesContext();
 
-    // 2. State to store detailed information of favorite products
     const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | undefined>(undefined);
 
-    // 3. useEffect to fetch product details whenever the favorites list changes
+    // Fetch favorite products based on the user's favorites
     useEffect(() => {
         // If there are no favorite products, no need to call API
         if (favorites.length === 0) {

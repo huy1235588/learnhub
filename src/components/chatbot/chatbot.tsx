@@ -17,7 +17,7 @@ export const Chatbot = () => {
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Tự động cuộn xuống tin nhắn mới nhất với animation mượt
+    // Auto-scroll to the latest message
     useEffect(() => {
         if (messagesContainerRef.current) {
             messagesContainerRef.current.scrollTo({
@@ -27,7 +27,7 @@ export const Chatbot = () => {
         }
     }, [messages]);
 
-    // Focus input khi mở chat
+    // Focus input when chat is opened and not minimized
     useEffect(() => {
         if (isOpen && !isMinimized && inputRef.current) {
             inputRef.current.focus();
@@ -41,7 +41,7 @@ export const Chatbot = () => {
         addMessage(input);
         setInput('');
 
-        // Hiệu ứng typing
+        // Simulate bot response
         setIsTyping(true);
         setTimeout(() => setIsTyping(false), 1500);
     };
@@ -52,7 +52,7 @@ export const Chatbot = () => {
 
     return (
         <>
-            {/* Cửa sổ Chat Pop-up với responsive design */}
+            {/* Chatbot UI with modern design and animations */}
             {isOpen && (
                 <div
                     className={cn(
@@ -61,7 +61,7 @@ export const Chatbot = () => {
                         isMinimized ? 'h-16 w-80' : 'h-[80vh] w-[90vw] sm:h-[88vh] sm:w-96 md:w-[420px]'
                     )}
                 >
-                    {/* Header với gradient background */}
+                    {/* Header */}
                     <div className='flex items-center justify-between border-b border-border/50 bg-gradient-to-r from-primary/5 to-secondary/5 p-4 rounded-t-2xl'>
                         <div className='flex items-center gap-3'>
                             <div className='relative'>
@@ -98,7 +98,7 @@ export const Chatbot = () => {
                         </div>
                     </div>
 
-                    {/* Khu vực hiển thị tin nhắn - chỉ hiện khi không minimize */}
+                    {/* Messages Container */}
                     {!isMinimized && (
                         <>
                             <div
@@ -138,7 +138,7 @@ export const Chatbot = () => {
                                                 message.sender === 'user' ? 'items-end' : 'items-start'
                                             )}
                                         >
-                                            {/* Bong bóng chat với hiệu ứng đẹp */}
+                                            {/* Show message text or product suggestions */}
                                             {message.text && (
                                                 <div
                                                     className={cn(
@@ -149,7 +149,7 @@ export const Chatbot = () => {
                                                     )}
                                                 >
                                                     <p className='text-sm leading-relaxed'>{message.text}</p>
-                                                    {/* Tail cho speech bubble */}
+                                                    {/* Decorative triangle for message bubble */}
                                                     {message.sender === 'user' && (
                                                         <div className='absolute -bottom-1 right-2 w-3 h-3 bg-primary transform rotate-45'></div>
                                                     )}
@@ -159,7 +159,7 @@ export const Chatbot = () => {
                                                 </div>
                                             )}
 
-                                            {/* Danh sách gợi ý sản phẩm với spacing tốt hơn */}
+                                            {/* Show product suggestions if available */}
                                             {message.products && message.products.length > 0 && (
                                                 <div className='flex flex-col gap-3 w-full max-w-xs animate-in slide-in-from-left-2 duration-500'>
                                                     {message.products.slice(0, 2).map((product, idx) => (
@@ -210,7 +210,7 @@ export const Chatbot = () => {
                                 )}
                             </div>
 
-                            {/* Form nhập tin nhắn với thiết kế hiện đại */}
+                            {/* Input Form */}
                             <form
                                 onSubmit={handleSubmit}
                                 className='flex items-center gap-3 border-t border-border/50 p-4 bg-gradient-to-r from-background/50 to-background/80 backdrop-blur-sm rounded-b-2xl'
@@ -238,7 +238,7 @@ export const Chatbot = () => {
                 </div>
             )}
 
-            {/* Button Bật/Tắt Chat với hiệu ứng đẹp */}
+            {/* Chat Toggle Button */}
             <Button
                 onClick={toggleChat}
                 className={cn(
