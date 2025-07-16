@@ -17,6 +17,13 @@ export interface Product {
     reviews?: Review[];
 }
 
+export interface Categories {
+    id: string;
+    name: string;
+    image: string;
+    courseCount: number;
+}
+
 export interface Review {
     id: string;
     userId: string;

@@ -1,4 +1,4 @@
-import { PaginationInfo, Product } from './product';
+import { Categories, PaginationInfo, Product } from './product';
 
 // API Response interfaces
 export interface ApiResponse<T = unknown> {
@@ -24,6 +24,11 @@ export interface ProductsApiResponse {
     products: Product[];
     pagination: PaginationInfo;
     filters: ProductFilters;
+    total: number;
+}
+
+export interface CategoriesApiResponse {
+    categories: Categories[];
     total: number;
 }
 

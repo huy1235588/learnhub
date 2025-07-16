@@ -62,7 +62,7 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
         productsToDisplay.length < totalProducts;
 
     return (
-        <div className='container mx-auto p-8 space-y-8'>
+        <div className='container mx-auto p-8 pt-0 space-y-8'>
             <Card className='p-6'>
                 <ProductControls
                     totalProducts={totalFilteredProducts}
