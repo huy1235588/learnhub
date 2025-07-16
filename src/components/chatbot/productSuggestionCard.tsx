@@ -2,27 +2,25 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Product } from '@/types/product';
-import { ArrowRight, BookOpen } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import { ProductModal } from '../product/ProductModal';
 
 export const ProductSuggestionCard = ({ product }: { product: Product }) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
-
-    // Mock data cho demo - trong thực tế sẽ lấy từ product object
-    const mockData = {
-        rating: 4.8,
-        students: 1234,
-        duration: '8 tuần',
-        level: 'Cơ bản',
-        originalPrice: '1,500,000đ',
-        discount: '20%',
-    };
+    const [selectedProductId, setSelectedProductId] = useState<Product | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleCardClick = () => {
-        // Logic chuyển hướng đến trang chi tiết sản phẩm
-        console.log(`Navigating to product: ${product.id}`);
+        setSelectedProductId(product);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedProductId(null);
     };
 
     return (
@@ -36,9 +34,9 @@ export const ProductSuggestionCard = ({ product }: { product: Product }) => {
             <div className='absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-secondary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none' />
 
             {/* Badge discount */}
-            {mockData.discount && (
-                <Badge className='absolute top-2 right-2 z-10 bg-destructive/90 text-destructive-foreground animate-pulse'>
-                    -{mockData.discount}
+            {product.originalPrice && (
+                <Badge className='absolute top-2 right-2 z-10 bg-destructive/90 text-white animate-pulse'>
+                    -{Math.round((1 - product.price / product.originalPrice) * 100)}%
                 </Badge>
             )}
 
@@ -59,15 +57,6 @@ export const ProductSuggestionCard = ({ product }: { product: Product }) => {
 
                     {/* Overlay gradient */}
                     <div className='absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent' />
-
-                    {/* Level badge */}
-                    <Badge
-                        variant='secondary'
-                        className='absolute bottom-2 left-2 bg-background/90 text-foreground backdrop-blur-sm'
-                    >
-                        <BookOpen className='w-3 h-3 mr-1' />
-                        {mockData.level}
-                    </Badge>
                 </div>
             </CardHeader>
 
@@ -82,8 +71,8 @@ export const ProductSuggestionCard = ({ product }: { product: Product }) => {
                     <div className='flex flex-col'>
                         <div className='flex items-center gap-2'>
                             <span className='font-bold text-primary text-sm'>{product.price}</span>
-                            {mockData.originalPrice && (
-                                <span className='text-xs text-muted-foreground line-through'>{mockData.originalPrice}</span>
+                            {product.originalPrice && (
+                                <span className='text-xs text-muted-foreground line-through'>{product.originalPrice}</span>
                             )}
                         </div>
                     </div>
@@ -105,6 +94,9 @@ export const ProductSuggestionCard = ({ product }: { product: Product }) => {
 
             {/* Hover effect border */}
             <div className='absolute inset-0 rounded-xl border-2 border-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none' />
+
+            {/* Product Modal */}
+            <ProductModal product={selectedProductId} isOpen={isModalOpen} onClose={handleCloseModal} />
         </Card>
     );
 };

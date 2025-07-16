@@ -122,8 +122,15 @@ export const getBotResponse = (userInput: string) => {
         };
     }
 
+    // Find the top 5 keywords with the most products
+    const keywordCounts = Object.entries(productKeywords)
+        .map(([keyword, ids]) => ({ keyword, count: ids.length }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+    const mostPopularKeywords = keywordCounts.map((item) => item.keyword);
+
     return {
-        text: 'Xin lỗi, tôi chưa tìm thấy khóa học phù hợp. Bạn có thể thử các từ khóa như "tiếng anh", "react", hoặc "thiết kế" không?',
+        text: `Xin lỗi, tôi chưa tìm thấy khóa học phù hợp. Bạn có thể thử các từ khóa phổ biến như: "${mostPopularKeywords.join(', ')}" không?`,
         products: [],
     };
 };

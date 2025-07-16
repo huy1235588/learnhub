@@ -58,7 +58,7 @@ export const Chatbot = () => {
                     className={cn(
                         'fixed bottom-4 right-4 z-50 flex flex-col rounded-2xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl transition-all duration-300 ease-in-out',
                         'sm:bottom-6 sm:right-6',
-                        isMinimized ? 'h-16 w-80' : 'h-[90vh] w-[90vw] sm:h-[95vh] sm:w-96 md:w-[420px]'
+                        isMinimized ? 'h-16 w-80' : 'h-[80vh] w-[90vw] sm:h-[88vh] sm:w-96 md:w-[420px]'
                     )}
                 >
                     {/* Header với gradient background */}
