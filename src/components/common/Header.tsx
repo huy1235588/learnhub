@@ -2,18 +2,16 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import { Bell, Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
+import { Bell, Heart, Menu, ShoppingCart, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export function Header() {
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const router = useRouter();
@@ -58,7 +56,7 @@ export function Header() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <nav className='hidden md:flex items-center space-x-1'>
+                    <nav className='hidden md:flex flex-1 items-center space-x-1'>
                         {navigation.map((item) => (
                             <div key={item.name} className='relative'>
                                 <Link
@@ -73,31 +71,8 @@ export function Header() {
                         ))}
                     </nav>
 
-                    {/* Search Bar */}
-                    <div className='hidden lg:flex items-center flex-1 max-w-md mx-8'>
-                        <div className='relative w-full group'>
-                            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 group-focus-within:text-emerald-500 transition-colors' />
-                            <Input
-                                type='text'
-                                placeholder='Tìm kiếm khóa học, giáo viên...'
-                                className='pl-10 pr-4 w-full border-gray-200 focus:border-emerald-500 focus:ring-emerald-500 transition-all duration-200 bg-gray-50 focus:bg-white'
-                            />
-                            <div className='absolute inset-0 rounded-md bg-gradient-to-r from-emerald-500/10 to-blue-500/10 opacity-0 group-focus-within:opacity-100 transition-opacity duration-200 pointer-events-none' />
-                        </div>
-                    </div>
-
                     {/* Right Actions */}
                     <div className='flex items-center space-x-2'>
-                        {/* Search Button - Mobile */}
-                        <Button
-                            variant='ghost'
-                            size='sm'
-                            className='lg:hidden hover:bg-emerald-50 hover:text-emerald-600'
-                            onClick={() => setIsSearchOpen(!isSearchOpen)}
-                        >
-                            <Search className='h-5 w-5' />
-                        </Button>
-
                         {/* Notifications */}
                         <Button
                             variant='ghost'
@@ -236,29 +211,6 @@ export function Header() {
                         </Sheet>
                     </div>
                 </div>
-
-                {/* Mobile Search */}
-                {isSearchOpen && (
-                    <div className='lg:hidden py-4 border-t bg-gradient-to-r from-emerald-50/50 to-blue-50/50'>
-                        <div className='relative group'>
-                            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 group-focus-within:text-emerald-500 transition-colors' />
-                            <Input
-                                type='text'
-                                placeholder='Tìm kiếm khóa học, giáo viên...'
-                                className='pl-10 pr-4 w-full border-gray-200 focus:border-emerald-500 focus:ring-emerald-500 transition-all duration-200 bg-white'
-                                autoFocus
-                            />
-                            <Button
-                                variant='ghost'
-                                size='sm'
-                                className='absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600'
-                                onClick={() => setIsSearchOpen(false)}
-                            >
-                                <X className='h-4 w-4' />
-                            </Button>
-                        </div>
-                    </div>
-                )}
             </div>
         </header>
     );

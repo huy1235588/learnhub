@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
         // Extract query parameters
         const searchParams = request.nextUrl.searchParams;
-        const userId = searchParams.get('userId') || 'user1';
+        const userId = searchParams.get('userId');
 
         if (!userId) {
             return NextResponse.json({ success: false, message: 'User ID is required' }, { status: 400 });

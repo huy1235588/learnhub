@@ -47,6 +47,8 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
 
     const { favorites } = useFavoritesContext();
 
+    const userId = 'user123';
+
     // Update products when initialProducts change (for favorites page)
     useEffect(() => {
         setProducts(initialProducts);
@@ -58,26 +60,35 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
         setViewingSuggestions(false); // Reset before fetching new suggestions
 
         try {
-            // Lấy ID sản phẩm đã xem và yêu thích từ localStorage
+            // Get viewed products from localStorage
             const viewedIds = JSON.parse(localStorage.getItem('viewedProductIds') || '[]');
 
             const response = await axiosInstance(
-                `/api/suggestions?viewedProducts=${viewedIds.join(',')}&favoriteProducts=${favorites.join(',')}`
+                `/api/suggestions?userId=${userId}&viewedProducts=${viewedIds.join(',')}&favoriteProducts=${favorites.join(',')}`
             );
             const result: ApiResponse<ProductsApiResponse> = await response.data;
 
             if (result.success && result.data && result.data.products.length > 0) {
                 setSuggestedProducts(result.data.products);
                 setViewingSuggestions(true); // Set flag to indicate suggestions are being viewed
-                toast.success('Đây là những sản phẩm được gợi ý cho bạn!');
+
+                toast.success('Đã tải gợi ý sản phẩm thành công!', {
+                    position: 'top-right',
+                    richColors: true,
+                });
             } else if (result.success && result.data.products.length === 0) {
-                toast.info('Không tìm thấy sản phẩm gợi ý nào phù hợp với bạn lúc này.');
+                toast.info('Không tìm thấy sản phẩm gợi ý nào phù hợp với bạn lúc này.', {
+                    position: 'top-right',
+                });
             } else {
                 throw new Error(result.error || 'Không thể tải gợi ý.');
             }
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
-            toast.error(errorMessage);
+            toast.error(errorMessage, {
+                position: 'top-right',
+                richColors: true,
+            });
         } finally {
             setIsSuggesting(false);
         }
@@ -275,7 +286,7 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
                         <div className='flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between'>
                             <Filter onFilterChange={setFilterValue} />
 
-                            {/* Số lượng kết quả */}
+                            {/* Filter toggle for desktop */}
                             <div className='text-sm text-muted-foreground'>
                                 {isFavoritesPage ? (
                                     <>
@@ -292,7 +303,7 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
                         </div>
                     </div>
 
-                    {/* Hiển thị khi đang xem gợi ý */}
+                    {/* Show when viewing suggestions */}
                     {viewingSuggestions && (
                         <div className='flex justify-between items-center pt-2'>
                             <div className='text-sm text-muted-foreground'>
@@ -305,9 +316,6 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
                     )}
                 </div>
             </Card>
-
-            {/* Phần Gợi ý cho bạn */}
-            {/* <ProductSuggestions /> */}
 
             {/* Product Grid */}
             {renderContent()}
