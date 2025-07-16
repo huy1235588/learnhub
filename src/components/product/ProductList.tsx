@@ -84,7 +84,7 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
                 throw new Error(result.error || 'Không thể tải gợi ý.');
             }
         } catch (err: unknown) {
-            const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
+            const errorMessage = err instanceof Error ? err.message : 'Không thể tải gợi ý sản phẩm lúc này.';
             toast.error(errorMessage, {
                 position: 'top-right',
                 richColors: true,
