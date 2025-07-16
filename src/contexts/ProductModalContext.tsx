@@ -34,10 +34,6 @@ export function ProductModalProvider({ children }: { children: ReactNode }) {
     return (
         <ProductModalContext.Provider value={value}>
             {children}
-            {/* Render the actual modal component here.
-        It's controlled by the state within this provider.
-        The `isOpen` prop is true whenever `product` is not null.
-      */}
             <ProductModal product={product} isOpen={!!product} onClose={closeModal} />
         </ProductModalContext.Provider>
     );

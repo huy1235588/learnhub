@@ -4,12 +4,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { useCart } from '@/contexts/CartContext';
 import { useFavoritesContext } from '@/contexts/FavoritesContext';
 import { cn } from '@/lib/utils';
 import { Product } from '@/types/product';
-import { BookOpen, Calendar, Clock, Heart, ShoppingCart, Star, Users } from 'lucide-react';
+import { BookOpen, Calendar, Check, Clock, Heart, ShoppingCart, Star, Users } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
 
 interface ProductModalProps {
     product: Product | null;
@@ -19,9 +19,11 @@ interface ProductModalProps {
 
 export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
     const { toggleFavorite, isFavorite } = useFavoritesContext();
-    const [isAddingToCart, setIsAddingToCart] = useState(false);
+    const { addToCart, isItemInCart, isAddingToCart } = useCart();
 
     if (!product) return null;
+
+    const isInCart = isItemInCart(product.id);
 
     const handleFavoriteToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
@@ -30,10 +32,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
     };
 
     const handleAddToCart = async () => {
-        setIsAddingToCart(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setIsAddingToCart(false);
+        addToCart(product.id);
     };
 
     const formatPrice = (price: number) => {
@@ -81,19 +80,27 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
                             </div>
 
                             <div className='flex flex-col gap-2'>
+                                {/* Add to Cart Button */}
                                 <Button
                                     onClick={handleAddToCart}
-                                    disabled={isAddingToCart}
+                                    disabled={isAddingToCart || isInCart}
                                     size='lg'
-                                    className='flex w-full items-center gap-2'
+                                    className={cn(
+                                        'flex w-full items-center gap-2',
+                                        isAddingToCart || isInCart ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                                    )}
                                 >
                                     {isAddingToCart ? (
                                         <div className='h-5 w-5 animate-spin rounded-full border-2 border-background border-t-transparent' />
+                                    ) : isInCart ? (
+                                        <Check className='h-5 w-5' />
                                     ) : (
                                         <ShoppingCart className='h-5 w-5' />
                                     )}
-                                    {isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ hàng'}
+                                    {isAddingToCart ? 'Đang thêm...' : isInCart ? 'Đã có trong giỏ hàng' : 'Thêm vào giỏ hàng'}
                                 </Button>
+
+                                {/* Favorite Button */}
                                 <Button variant='outline' size='lg' className='w-full' onClick={handleFavoriteToggle}>
                                     <Heart
                                         className={cn(

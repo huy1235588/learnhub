@@ -33,8 +33,8 @@ export default function RootLayout({
         <html lang='en'>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <div className='min-h-screen flex flex-col bg-gray-50'>
-                    <Header />
                     <ClientProviders>
+                        <Header />
                         <main>
                             {children}
                             <Chatbot />

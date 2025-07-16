@@ -257,7 +257,7 @@ export default function HeroSection() {
             </div>
 
             {/* Auto-play Indicator - Mobile optimized */}
-            <div className='absolute bottom-4 right-4 sm:bottom-8 sm:right-8 z-20'>
+            <div className='absolute top-20 right-4 sm:bottom-8 sm:right-8 z-20'>
                 <button
                     onClick={() => setIsAutoPlaying(!isAutoPlaying)}
                     className={`p-2 sm:p-3 rounded-full transition-all duration-300 ${
