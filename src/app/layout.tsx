@@ -1,3 +1,4 @@
+import { Chatbot } from '@/components/chatbot/chatbot';
 import { Footer } from '@/components/common/Footer';
 import { Header } from '@/components/common/Header';
 import { ClientProviders } from '@/providers/ClientProviders';
@@ -34,7 +35,10 @@ export default function RootLayout({
                 <div className='min-h-screen flex flex-col bg-gray-50'>
                     <Header />
                     <ClientProviders>
-                        <main>{children}</main>
+                        <main>
+                            {children}
+                            <Chatbot />
+                        </main>
                     </ClientProviders>
                     <Footer />
                 </div>

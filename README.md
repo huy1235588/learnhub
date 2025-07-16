@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LearnHub - Nền tảng học trực tuyến
 
-## Getting Started
+LearnHub là một nền tảng giáo dục trực tuyến hiện đại được xây dựng với Next.js 15, React 19, và Tailwind CSS v4. Dự án tập trung vào việc cung cấp trải nghiệm người dùng tốt nhất với giao diện thân thiện và tính năng phong phú.
 
-First, run the development server:
+## Tính năng chính
 
+- **Tìm kiếm và lọc khóa học**: Hỗ trợ tìm kiếm theo từ khóa và lọc theo giá
+- **Gợi ý thông minh**: API đề xuất khóa học dựa trên lịch sử xem và yêu thích
+- **Quản lý yêu thích**: Đánh dấu và theo dõi các khóa học ưa thích
+- **Responsive**: Thiết kế tương thích đa thiết bị
+
+## Công nghệ sử dụng
+
+- **Frontend**: Next.js 15 (App Router), React 19, TypeScript
+- **UI/Styling**: Tailwind CSS v4, shadcn/ui components
+- **State Management**: Zustand, React hooks
+- **Form Handling**: React Hook Form + Zod validation
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
+
+## Cài đặt
+
+1. Clone dự án:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/huy1235588/learnhub.git
+cd learnhub
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Cài đặt dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Chạy môi trường development:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Dự án sẽ chạy tại `http://localhost:3000`
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev` - Chạy development server với Turbopack
+- `npm run build` - Build dự án cho production
+- `npm run start` - Chạy phiên bản production
+- `npm run lint:fix` - Kiểm tra và sửa lỗi ESLint
+- `npm run format` - Format code với Prettier
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Cấu trúc thư mục
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/              # Next.js App Router
+│   ├── api/         # API Routes
+│   └── ...
+├── components/       # React Components
+│   ├── common/      # Common components
+│   ├── features/    # Feature components
+│   ├── product/     # Product related
+│   └── ui/          # UI components
+├── contexts/        # React Contexts
+├── hooks/           # Custom hooks
+├── lib/            # Utilities
+├── services/       # API Services
+└── types/          # TypeScript types
+```
