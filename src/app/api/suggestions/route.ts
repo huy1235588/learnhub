@@ -17,6 +17,24 @@ export async function GET(request: NextRequest) {
         const viewedProducts = searchParams.get('viewedProducts')?.split(',') || [];
         const favoriteProducts = searchParams.get('favoriteProducts')?.split(',') || [];
 
+        // If no viewed or favorite products, return 6 sorted products
+        if (viewedProducts.length === 0 && favoriteProducts.length === 0) {
+            const sortedProducts = mockProducts.sort((a, b) => b.rating - a.rating).slice(0, 6);
+            return NextResponse.json({
+                success: true,
+                data: {
+                    products: sortedProducts,
+                    pagination: {
+                        currentPage: 1,
+                        totalPages: 1,
+                        totalItems: sortedProducts.length,
+                        itemsPerPage: sortedProducts.length,
+                        hasMore: false,
+                    },
+                },
+            });
+        }
+
         // Pagination
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '12');
@@ -49,7 +67,7 @@ export async function GET(request: NextRequest) {
                 return matchesCategory || matchesTags;
             })
             .sort((a, b) => b.rating - a.rating) // Sort by rating
-            .slice(0, 6); // Limit to 4 suggestions
+            .slice(0, 6); // Limit to 6 suggestions
 
         // Calculate pagination information
         const totalItems = suggestions.length;
