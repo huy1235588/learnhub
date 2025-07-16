@@ -1,14 +1,17 @@
 'use client';
 
 import { FavoritesProvider } from '@/contexts/FavoritesContext';
+import { ProductModalProvider } from '@/contexts/ProductModalContext';
 import { ReactNode } from 'react';
 import { Toaster } from 'sonner';
 
 export function ClientProviders({ children }: { children: ReactNode }) {
     return (
         <FavoritesProvider>
-            {children}
-            <Toaster richColors />
+            <ProductModalProvider>
+                {children}
+                <Toaster richColors />
+            </ProductModalProvider>
         </FavoritesProvider>
     );
 }

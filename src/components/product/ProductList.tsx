@@ -2,12 +2,11 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useProductModal } from '@/contexts/ProductModalContext';
 import { useProducts } from '@/hooks/useProducts'; // Import a new hook
 import { Product } from '@/types/product';
-import { useMemo, useState } from 'react';
 import { ProductControls } from './ProductControls'; // Import a new component
 import { ProductGrid } from './ProductGrid'; // Import a new component
-import { ProductModal } from './ProductModal';
 
 interface ProductListProps {
     initialProducts: Product[];
@@ -32,26 +31,14 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
         handleLoadMore,
         trackViewedProduct,
     } = useProducts(initialProducts, totalProducts, isFavoritesPage);
-
-    const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { openModal } = useProductModal();
 
     // Handle product click to open modal
     const handleProductClick = (product: Product) => {
-        setSelectedProductId(product.id);
-        setIsModalOpen(true);
+        openModal(product);
+
         trackViewedProduct(product); // Track product view
     };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedProductId(null);
-    };
-
-    const selectedProduct = useMemo(() => {
-        if (!selectedProductId) return null;
-        return initialProducts.find((p) => p.id === selectedProductId) || null;
-    }, [selectedProductId, initialProducts]);
 
     const shouldShowLoadMore =
         !isFavoritesPage &&
@@ -92,8 +79,6 @@ export function ProductList({ initialProducts, totalProducts, isLoading, error, 
                     </Button>
                 </div>
             )}
-
-            <ProductModal product={selectedProduct} isOpen={isModalOpen} onClose={handleCloseModal} />
         </div>
     );
 }

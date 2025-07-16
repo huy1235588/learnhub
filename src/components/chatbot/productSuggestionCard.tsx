@@ -1,26 +1,20 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useProductModal } from '@/contexts/ProductModalContext';
 import { Product } from '@/types/product';
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
-import { ProductModal } from '../product/ProductModal';
 
 export const ProductSuggestionCard = ({ product }: { product: Product }) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
-    const [selectedProductId, setSelectedProductId] = useState<Product | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { openModal } = useProductModal();
 
+    // Handle card click to open modal
     const handleCardClick = () => {
-        setSelectedProductId(product);
-        setIsModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedProductId(null);
+        openModal(product);
     };
 
     return (
@@ -94,9 +88,6 @@ export const ProductSuggestionCard = ({ product }: { product: Product }) => {
 
             {/* Hover effect border */}
             <div className='absolute inset-0 rounded-xl border-2 border-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none' />
-
-            {/* Product Modal */}
-            <ProductModal product={selectedProductId} isOpen={isModalOpen} onClose={handleCloseModal} />
         </Card>
     );
 };
